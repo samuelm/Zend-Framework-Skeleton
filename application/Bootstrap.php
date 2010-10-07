@@ -171,9 +171,7 @@ class Bootstrap
      * @return void
      */
     private function _initLocale(){
-        if ($locale === null) {
-            $locale = new Zend_Locale();
-        }
+        $locale = new Zend_Locale();
         
         if (!Zend_Locale::isLocale($locale, true, false)) {
             if (!Zend_Locale::isLocale($locale, false, false)) {
