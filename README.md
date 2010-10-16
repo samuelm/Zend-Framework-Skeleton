@@ -51,10 +51,9 @@ Installation
     
 4. Create the virtual hosts (one per module)
     
-    `
     <VirtualHost *:80>
             ServerAdmin admin@example.com
-
+            
             ServerName frontend.zfs.local
             DocumentRoot PATH_TO_THE_PROJECT/public/frontend
             <Directory />
@@ -67,16 +66,15 @@ Installation
                     Order allow,deny
                     allow from all
             </Directory>
-
+            
             ErrorLog /var/log/apache2/frontend-error.log
-
+            
             # Possible values include: debug, info, notice, warn, error, crit,
             # alert, emerg.
             LogLevel warn
-
+            
             CustomLog /var/log/apache2/frontend-access.log combined
     </VirtualHost>
-    `
     
     `<VirtualHost *:80>
             ServerAdmin admin@example.com
