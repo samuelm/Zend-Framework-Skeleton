@@ -42,11 +42,13 @@ Credentials to access the BO
 Admin Group
 -----------
 Username: john.doe
+
 Password: lorem
 
 Member Group
 ------------
 Username: member.test
+
 Password: lorem
 
 Installation
