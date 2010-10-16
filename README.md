@@ -51,7 +51,7 @@ Installation
     
 4. Create the virtual hosts (one per module)
     
-    \<VirtualHost *:80>
+    <VirtualHost *:80>
         ServerAdmin admin@example.com
         
         ServerName frontend.zfs.local
