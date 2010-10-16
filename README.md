@@ -116,7 +116,7 @@ Installation
 
 5. If you are working on a local machine add the servername to your local hosts file
 
-    `On *nix: echo 'frontend.zfs.local' >> /etc/hosts
+    `On *nix: echo 'frontend.zfs.local' >> /etc/hosts  
     On *nix: echo 'backoffice.zfs.local' >> /etc/hosts`
     
 7. Import the db scheme located at /docs/sql/db.sql
