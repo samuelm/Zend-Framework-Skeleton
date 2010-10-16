@@ -1,0 +1,18 @@
+<?php
+/**
+ * View for the login action
+ *
+ * @category backoffice
+ * @package backoffice_views
+ * @subpackage backoffice_views_profile
+ * @copyright Company
+ */
+?>
+<div class="inner-form">
+    <?php if (isset($this->error)):?>
+        <div class="msg msg-error">
+            <p><?php echo '<strong>Login failed</strong>.<br />Please check that you wrote your Username and Password correctly.';?></p>
+        </div>
+    <?php endif;?>
+    <?php echo $this->form;?>
+</div>
