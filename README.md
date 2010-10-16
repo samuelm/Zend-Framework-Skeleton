@@ -122,4 +122,6 @@ Installation
     
     `On *nix: echo 'backoffice.zfs.local' >> /etc/hosts`
     
+7. Import the db scheme located at /docs/sql/db.sql
+    
 That's it you can start now using the skeleton to build the next amazing app!
