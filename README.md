@@ -52,58 +52,59 @@ Installation
 4. Create the virtual hosts (one per module)
     
     <VirtualHost *:80>
-            ServerAdmin admin@example.com
-            
-            ServerName frontend.zfs.local
-            DocumentRoot PATH_TO_THE_PROJECT/public/frontend
-            <Directory />
-                    Options FollowSymLinks
-                    AllowOverride All 
-            </Directory>
-            <Directory PATH_TO_THE_PROJECT/public/frontend>
-                    Options -Indexes
-                    AllowOverride All
-                    Order allow,deny
-                    allow from all
-            </Directory>
-            
-            ErrorLog /var/log/apache2/frontend-error.log
-            
-            # Possible values include: debug, info, notice, warn, error, crit,
-            # alert, emerg.
-            LogLevel warn
-            
-            CustomLog /var/log/apache2/frontend-access.log combined
+        ServerAdmin admin@example.com
+        
+        ServerName frontend.zfs.local
+        DocumentRoot PATH_TO_THE_PROJECT/public/frontend
+        <Directory />
+            Options FollowSymLinks
+            AllowOverride All 
+        </Directory>
+        <Directory PATH_TO_THE_PROJECT/public/frontend>
+            Options -Indexes
+            AllowOverride All
+            Order allow,deny
+            allow from all
+        </Directory>
+        
+        ErrorLog /var/log/apache2/frontend-error.log
+        
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+        
+        CustomLog /var/log/apache2/frontend-access.log combined
     </VirtualHost>
     
-    `<VirtualHost *:80>
-            ServerAdmin admin@example.com
-
-            ServerName backoffice.zfs.local
-            DocumentRoot PATH_TO_THE_PROJECT/public/backoffice
-            <Directory />
-                    Options FollowSymLinks
-                    AllowOverride All 
-            </Directory>
-            <Directory PATH_TO_THE_PROJECT/public/backoffice>
-                    Options -Indexes
-                    AllowOverride All
-                    Order allow,deny
-                    allow from all
-            </Directory>
-
-            ErrorLog /var/log/apache2/backoffice-error.log
-
-            # Possible values include: debug, info, notice, warn, error, crit,
-            # alert, emerg.
-            LogLevel warn
-
-            CustomLog /var/log/apache2/backoffice-access.log combined
-    </VirtualHost>`
+    <VirtualHost *:80>
+        ServerAdmin admin@example.com
+        
+        ServerName backoffice.zfs.local
+        DocumentRoot PATH_TO_THE_PROJECT/public/backoffice
+        <Directory />
+            Options FollowSymLinks
+            AllowOverride All 
+        </Directory>
+        <Directory PATH_TO_THE_PROJECT/public/backoffice>
+            Options -Indexes
+            AllowOverride All
+            Order allow,deny
+            allow from all
+        </Directory>
+        
+        ErrorLog /var/log/apache2/backoffice-error.log
+        
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+        
+        CustomLog /var/log/apache2/backoffice-access.log combined
+    </VirtualHost>
 
 5. If you are working on a local machine add the servername to your local hosts file
 
     `On *nix: echo 'frontend.zfs.local' >> /etc/hosts`
+    
     `On *nix: echo 'backoffice.zfs.local' >> /etc/hosts`
     
 That's it you can start now using the skeleton to build the next amazing app!
