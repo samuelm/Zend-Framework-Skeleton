@@ -36,6 +36,19 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * BO menu generated automatically based on an array and filtered through the Flag and flippers configured
 * All the tables needed dumped in a sql file under /docs
 
+Credentials to access the BO
+============================
+
+Admin Group
+-----------
+Username: john.doe
+Password: lorem
+
+Member Group
+------------
+Username: member.test
+Password: lorem
+
 Installation
 ============
 
