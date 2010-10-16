@@ -50,8 +50,9 @@ Installation
     `On *nix: chmod -R 777 cache logs`
     
 4. Create the virtual hosts (one per module)
-
-    `<VirtualHost *:80>
+    
+    `
+    <VirtualHost *:80>
             ServerAdmin admin@example.com
 
             ServerName frontend.zfs.local
@@ -74,7 +75,8 @@ Installation
             LogLevel warn
 
             CustomLog /var/log/apache2/frontend-access.log combined
-    </VirtualHost>`
+    </VirtualHost>
+    `
     
     `<VirtualHost *:80>
             ServerAdmin admin@example.com
