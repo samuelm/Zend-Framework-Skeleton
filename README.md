@@ -118,6 +118,8 @@ Installation
 
     `On *nix: echo 'frontend.zfs.local' >> /etc/hosts`  
     `On *nix: echo 'backoffice.zfs.local' >> /etc/hosts`
+
+6. Duplicate the file application/config/environment.example.php and rename the copy to environment.php
     
 7. Import the db scheme located at /docs/sql/db.sql
     
