@@ -31,7 +31,7 @@ CREATE TABLE `backoffice_acls` (
   `privilege_id` int(11) unsigned NOT NULL,
   `allow` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `backoffice_acls` (
 
 LOCK TABLES `backoffice_acls` WRITE;
 /*!40000 ALTER TABLE `backoffice_acls` DISABLE KEYS */;
-INSERT INTO `backoffice_acls` VALUES (1,1,1,1,1),(2,1,1,2,1),(3,1,1,3,1),(4,1,1,4,1),(5,1,1,5,1),(6,1,4,12,1),(7,1,4,13,1),(8,1,4,14,1),(9,1,4,15,1),(10,1,4,16,1),(11,8,1,2,1),(12,8,1,3,1),(13,8,1,4,1),(14,8,4,16,1);
+INSERT INTO `backoffice_acls` VALUES (1,1,1,1,1),(2,1,1,2,1),(3,1,1,3,1),(4,1,1,4,1),(5,1,1,5,1),(6,1,4,12,1),(7,1,4,13,1),(8,1,4,14,1),(9,1,4,15,1),(10,1,4,16,1),(11,8,1,2,1),(12,8,1,3,1),(13,8,1,4,1),(14,8,4,16,1),(15,1,1,1,1),(16,1,1,2,1),(17,1,1,3,1),(18,1,1,4,1),(19,1,1,5,1),(20,1,3,7,1),(21,1,3,8,1),(22,1,3,9,1),(23,1,3,10,1),(24,1,3,11,1),(25,1,4,12,1),(26,1,4,13,1),(27,1,4,14,1),(28,1,4,15,1),(29,1,4,16,1),(30,2,3,7,1),(31,2,3,8,1),(32,2,3,9,1),(33,2,4,12,1),(34,2,4,13,1),(35,2,4,14,1),(36,2,4,15,1),(37,2,4,16,1),(38,3,3,10,1),(39,2,3,7,1),(40,2,3,8,1),(41,2,3,9,1),(42,2,3,10,1),(43,2,3,11,1),(44,2,4,12,1),(45,2,4,13,1),(46,2,4,14,1),(47,2,4,15,1),(48,2,4,16,1),(49,3,3,10,1);
 /*!40000 ALTER TABLE `backoffice_acls` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,7 +112,7 @@ CREATE TABLE `backoffice_privileges` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`,`resource_id`),
   KEY `idx_resource_id` (`resource_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `backoffice_resources` (
   `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,7 +181,7 @@ CREATE TABLE `backoffice_users` (
 
 LOCK TABLES `backoffice_users` WRITE;
 /*!40000 ALTER TABLE `backoffice_users` DISABLE KEYS */;
-INSERT INTO `backoffice_users` VALUES (1,'John','Doe :)','john.doe','6c64e8dcebc17e3d08546a355b52817f63eb6fe2',0,'john@doe.es','987654321','2010-10-16 20:31:04','2010-10-14 15:53:44'),(4,'Member','Test','member.test','6c64e8dcebc17e3d08546a355b52817f63eb6fe2',0,'member@test.com','1234567890','2010-10-16 20:27:02','2010-10-16 20:26:54');
+INSERT INTO `backoffice_users` VALUES (1,'John','Doe :)','john.doe','6c64e8dcebc17e3d08546a355b52817f63eb6fe2',0,'john@doe.es','987654321','2010-10-17 21:11:35','2010-10-14 15:53:44'),(4,'Member','Test','member.test','6c64e8dcebc17e3d08546a355b52817f63eb6fe2',0,'member@test.com','1234567890','2010-10-17 08:53:22','2010-10-16 20:26:54');
 /*!40000 ALTER TABLE `backoffice_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -221,4 +221,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-10-16 22:55:53
+-- Dump completed on 2010-10-17 23:12:04
