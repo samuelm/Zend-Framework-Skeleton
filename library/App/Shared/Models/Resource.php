@@ -36,7 +36,6 @@ class Resource extends App_Model
     protected $_hardcodedResources = array(
         'error',
         'index',
-        'profile',
     );
     
     public function init(){

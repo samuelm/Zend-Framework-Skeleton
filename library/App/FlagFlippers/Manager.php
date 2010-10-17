@@ -13,11 +13,7 @@
 class App_FlagFlippers_Manager
 {
     public static $indexKey = 'FlagFlippers';
-    private static $_guestsAllowedResources = array(
-        'profile' => array('login'),
-    );
     private static $_membersAllowedResources = array(
-        'profile',
         'index',
     );
     
@@ -149,17 +145,6 @@ class App_FlagFlippers_Manager
                 $aclObject->allow($acl['group_name'], $acl['resource_name'], $acl['privilege_name']);
             } else {
                 $aclObject->deny($acl['group_name'], $acl['resource_name'], $acl['privilege_name']);
-            }
-        }
-        
-        //Hardcode basic paths for guests
-        foreach(App_FlagFlippers_Manager::$_guestsAllowedResources as $resource => $privileges){
-            if(is_array($privileges)){
-                foreach($privileges as $privilege){
-                    $aclObject->allow('guests', $resource, $privilege);
-                }
-            }else{
-                $aclObject->allow('guests', $resource);
             }
         }
         
