@@ -17,6 +17,8 @@
 
 CREATE DATABASE app CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+USE app;
+
 --
 -- Table structure for table `backoffice_acls`
 --
