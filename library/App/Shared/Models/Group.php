@@ -22,7 +22,7 @@ class Group extends App_Model
      * @var string
      * @access protected
      */
-    protected $_name = 'backoffice_groups';
+    protected $_name = 'groups';
     
     /**
      * Name of the column whose content will be displayed
@@ -34,41 +34,15 @@ class Group extends App_Model
     protected $_displayColumn = 'name';
     
     /**
-     * Overrides getAll() in App_Model
-     * 
-     * @param int $page 
-     * @access public
-     * @return Zend_Paginator
-     */
-    public function findAll($page = 1){
-        $paginator = parent::findAll($page);
-        $items = array();
-        
-        foreach($paginator as $item){
-            $parent = $this->findById($item['parent_id']);
-            
-            if(!empty($parent)){
-                $item['parent_name'] = $parent['name'];
-            }
-            
-            $items[] = $item;
-        }
-        
-        return Zend_Paginator::factory($items);
-    }
-    
-    /**
      * Fetches all groups, always checks that the parents are
      * before the children, so that the data can be fed into the 
-     * ACL
+     * Flag and Flippers
      * 
      * @access public
      * @return array
      */
     public function fetchAllThreaded(){
-        $select = $this->_getQuery();
-        $select->reset(Zend_Db_Select::WHERE);
-        
+        $select = $this->_select();
         return $this->_db->fetchAll($select);
     }
     
@@ -126,7 +100,7 @@ class Group extends App_Model
      * @access public
      * @return array
      */
-    public function getPairs(){
+    public function findPairs(){
         $pairs = parent::findPairs();
         
         $pairs = array('2' => 'member') + $pairs;
@@ -140,6 +114,19 @@ class Group extends App_Model
      * @return void
      */
     protected function _getQuery(){
+        $select = $this->_select();
+        $select->where('g.id NOT IN (1, 2, 3)');
+        
+        return $select;
+    }
+    
+    /**
+     * Overrides App_Model::getQuery()
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function _select(){
         $select = new Zend_Db_Select($this->_db);
         
         $select->from(array('g' => $this->_name));
@@ -147,7 +134,6 @@ class Group extends App_Model
         $select->order('g.parent_id ASC');
         $select->reset(Zend_Db_Table::COLUMNS);
         $select->columns(array('g.*', 't.name AS parent_name'));
-        $select->where('g.id NOT IN (1, 2, 3)');
         
         return $select;
     }

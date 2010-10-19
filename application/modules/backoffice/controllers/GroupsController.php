@@ -170,16 +170,16 @@ class GroupsController extends App_Backoffice_Controller
      * @access public
      * @return void
      */
-    public function permissionsAction(){
+    public function flippersAction(){
         $this->title = 'Manage permissions for this group.';
         
         $form = new GroupPermissionsForm();
-        $aclModel = new Acl();
+        $fliperModel = new Flipper();
         $groupModel = new Group();
         
         if ($this->getRequest()->isPost()) {
             if($form->isValid($this->getRequest()->getPost())) {
-                $aclModel->savePermissions($form->getValues());
+                $fliperModel->savePermissions($form->getValues());
                 $this->_helper->FlashMessenger(
                     array(
                         'msg-success' => sprintf('Permissions for group %s were successfully updated.', $group['name']),
@@ -201,8 +201,8 @@ class GroupsController extends App_Backoffice_Controller
             }
             
             $group = $groupModel->findById($id);
-            $acl = $aclModel->findByGroupId($id);
-            $acl += array('group_id' => $id);
+            $flipper = $fliperModel->findByGroupId($id);
+            $flipper += array('group_id' => $id);
             
             if (empty($group)) {
                 $this->_helper->FlashMessenger(
@@ -214,7 +214,7 @@ class GroupsController extends App_Backoffice_Controller
                 $this->_redirect('/groups/');
             }
             
-            $form->populate($acl);
+            $form->populate($flipper);
             $this->view->item = $group;
         }
         

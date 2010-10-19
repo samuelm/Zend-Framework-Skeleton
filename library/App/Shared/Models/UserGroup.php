@@ -42,7 +42,7 @@ class UserGroup extends App_Model
             $select->from($this->_name);
         } else {
             $select->from(array('ug' => $this->_name));
-            $select->join(array('g' => 'backoffice_groups'), 'ug.group_id = g.id');
+            $select->join(array('g' => 'groups'), 'ug.group_id = g.id');
         }
         
         $select->where('user_id = ?', $userId);

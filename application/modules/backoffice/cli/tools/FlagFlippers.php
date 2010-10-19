@@ -1,7 +1,7 @@
 <?php
 /**
  * Gets all the methods in a controller and 
- * grabs all the acl information
+ * grabs all the flag and flippers information
  *
  * @category backoffice
  * @package backoffice_cli
@@ -17,18 +17,20 @@ if (!Zend_Registry::get('IS_DEVELOPMENT')) {
 }
 
 try {
-    $opts = new Zend_Console_Getopt(array('path|p=s' => 'Path to the desired folder/file. For example: /var/www/myapp/controllers/',));
+    $opts = new Zend_Console_Getopt(array('module|m=s' => 'Name of the desired module. For example: backoffice',));
     $opts->parse();
 } catch(Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage();
     exit(); 
 }
 
-$path = $opts->getOption('p');
-if (!$path) {
+$module = $opts->getOption('m');
+if (!$module) {
     echo $opts->getUsageMessage();
     exit();
 }
+
+$path = APPLICATION_PATH . '/modules/' . $module . '/controllers';
 
 if (!is_readable($path)) {
     echo 'Error! Path ' . $path . ' is not readable.';
@@ -51,7 +53,6 @@ if (is_file($path)) {
 }
 
 $resources = array();
-$inflector = App_Inflector::getInstance();
 
 foreach ($files as $file) {
     $filepath = $path . DIRECTORY_SEPARATOR . $file;
@@ -61,7 +62,7 @@ foreach ($files as $file) {
     foreach($reflectionFile->getClasses() as $class) {
         $classInfo = array(
             'description' => $class->getDocblock()->getShortDescription(),
-            'name' => $inflector->convertControllerName($class->getName()),
+            'name' => strtolower($module) . '-' . App_Inflector::convertControllerName($class->getName()),
             'methods' => array(),
         );
         
@@ -69,7 +70,7 @@ foreach ($files as $file) {
             if (substr($method->getName(), -6) == 'Action') {
                 $classInfo['methods'][] = array(
                     'description' => $method->getDocblock()->getShortDescription(),
-                    'name' => $inflector->convertActionName($method->getName()),
+                    'name' => App_Inflector::convertActionName($method->getName()),
                 );
             }
         }
@@ -78,15 +79,15 @@ foreach ($files as $file) {
     }
 }
 
-$acl = App_Cli_Acl::getInstance();
-$inserts = $acl->generateInserts($resources);
+$flagFlippers = App_Cli_FlagFlippers::getInstance();
+$inserts = $flagFlippers->generateInserts($resources);
 if (empty($inserts)) {
-    echo 'No new resources / privileges found.';
+    echo 'No new flags / privileges found.';
     exit();
 }
 
 $date = new Zend_Date();
-echo '-- ACL data' . PHP_EOL;
+echo '-- Flag And Flipper data' . PHP_EOL;
 echo '-- Report generated at ' . $date . PHP_EOL;
 
 foreach ($inserts as $insert) {

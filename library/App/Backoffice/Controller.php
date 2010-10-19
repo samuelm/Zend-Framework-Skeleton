@@ -41,8 +41,8 @@ abstract class App_Backoffice_Controller extends App_Controller
         
         Zend_Registry::set('controllerName', $controllerName);
         Zend_Registry::set('actionName', $actionName);
-        // check the ACL
-        $this->_checkAcl();
+        // check the Flag and Flippers
+        $this->_checkFlagFlippers();
     }
     
     /**
@@ -77,14 +77,14 @@ abstract class App_Backoffice_Controller extends App_Controller
     }
     
     /**
-     * Queries the ACL and redirects the user to a different
+     * Queries the Flag and Flipper and redirects the user to a different
      * page if he/her doesn't have the required permissions for
      * accessing the current page
      * 
      * @access protected
      * @return void
      */
-    protected function _checkAcl(){
+    protected function _checkFlagFlippers(){
         $controllerName = Zend_Registry::get('controllerName');
         $actionName = Zend_Registry::get('actionName');
         
@@ -100,15 +100,17 @@ abstract class App_Backoffice_Controller extends App_Controller
         $user = $auth->getIdentity();
         
         if(Zend_Registry::get('IS_DEVELOPMENT') && $controllerName != 'error'){
-            $resourceModel = new Resource();
+            $flagModel = new Flag();
             
-            if (!$resourceModel->checkRegistered($controllerName, $actionName)) {
+            $flag = strtolower(CURRENT_MODULE) . '-' . $controllerName;
+            
+            if(!$flagModel->checkRegistered($flag, App_Inflector::camelCaseToDash($actionName))){
                 $params = array(
                     'originalController' => $controllerName,
                     'originalAction' => $actionName
                 );
                 
-                $this->_forward('acl', 'error', NULL, $params);
+                $this->_forward('flagflippers', 'error', NULL, $params);
                 return;
             }
         }

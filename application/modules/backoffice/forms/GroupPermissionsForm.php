@@ -22,25 +22,25 @@ class GroupPermissionsForm extends App_Backoffice_Form
         // set the form's method
         $this->setMethod('post');
         
-        $resourceModel = new Resource();
-        $resources = $resourceModel->getAllResourcesAndPrivileges();
+        $flagModel = new Flag();
+        $flags = $flagModel->getAllFlagsAndPrivileges();
         
-        foreach ($resources as $resource) {
+        foreach ($flags as $flag) {
             $displayGroup = array();
-            foreach ($resource['privileges'] as $privilege) {
-                $checkbox = new Zend_Form_Element_Checkbox('acl_' . $resource['id'] . '_' . $privilege['id']);
+            foreach ($flag['privileges'] as $privilege) {
+                $checkbox = new Zend_Form_Element_Checkbox('flipper_' . $flag['id'] . '_' . $privilege['id']);
                 $checkbox->setOptions(
                     array(
-                        'label' => '/' . $resource['name'] . '/' . $privilege['name'] . '/ (' . $privilege['description'] . ' )',
+                        'label' => '/' . $flag['name'] . '/' . $privilege['name'] . '/ (' . $privilege['description'] . ' )',
                     )
                 );
                 $this->addElement($checkbox);
-                $displayGroup []= $checkbox->getName();
+                $displayGroup[] = $checkbox->getName();
             }
             
-            $displayGroupTitle = ucfirst($resource['name']) . ' ( ' . $resource['description'] . ' )';
-            $this->addDisplayGroup($displayGroup, $resource['name'])
-                 ->getDisplayGroup($resource['name'])
+            $displayGroupTitle = ucfirst($flag['name']) . ' ( ' . $flag['description'] . ' )';
+            $this->addDisplayGroup($displayGroup, $flag['name'])
+                 ->getDisplayGroup($flag['name'])
                  ->setLegend($displayGroupTitle);
         }
         
@@ -76,9 +76,9 @@ class GroupPermissionsForm extends App_Backoffice_Form
         $parsed = array('group_id' => $data['group_id']);
         unset($data['group_id']);
         
-        foreach ($data as $acl) {
-            if ($acl['allow']) {
-                $parsed['acl_' . $acl['resource_id'] . '_' . $acl['privilege_id']] = 1;
+        foreach ($data as $flipper) {
+            if ($flipper['allow']) {
+                $parsed['flipper_' . $flipper['flag_id'] . '_' . $flipper['privilege_id']] = 1;
             }
         }
         
@@ -95,17 +95,17 @@ class GroupPermissionsForm extends App_Backoffice_Form
         $raw = parent::getValues();
         $values = array(
             'group_id' => $raw['group_id'],
-            'acl' => array(
+            'flipper' => array(
             ),
         );
         
         foreach ($raw as $key => $value) {
-            if (preg_match('/^acl_([0-9]{1,})_([0-9]{1,})$/', $key)) {
+            if (preg_match('/^flipper_([0-9]{1,})_([0-9]{1,})$/', $key)) {
                 $parts = explode('_', $key);
-                if (!isset($values['acl'][$parts[1]])) {
-                    $values['acl'][$parts[1]] = array();
+                if (!isset($values['flipper'][$parts[1]])) {
+                    $values['flipper'][$parts[1]] = array();
                 }
-                $values['acl'][$parts[1]][$parts[2]] = $value;
+                $values['flipper'][$parts[1]][$parts[2]] = $value;
             }
         }
         

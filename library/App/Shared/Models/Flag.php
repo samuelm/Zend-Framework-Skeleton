@@ -1,13 +1,13 @@
 <?php
 /**
- * Model that manages the resources (controller names) for defining
- * the ACLs in the application
+ * Model that manages the flags (controller names) for defining
+ * the Flags in the application
  *
  * @package backoffice_models
  * @copyright Company
  */
 
-class Resource extends App_Model
+class Flag extends App_Model
 {
     /**
      * Column for the primary key
@@ -23,7 +23,16 @@ class Resource extends App_Model
      * @var string
      * @access protected
      */
-    protected $_name = 'backoffice_resources';
+    protected $_name = 'flags';
+    
+    /**
+     * Name of the column whose content will be displayed
+     * on <select> widgets
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_displayColumn = 'name';
     
     /**
      * Paths that are hardcoded in the application and should not
@@ -64,7 +73,7 @@ class Resource extends App_Model
      * @access public
      * @return array
      */
-    public function getAllResourcesAndPrivileges(){
+    public function getAllFlagsAndPrivileges(){
         $select = new Zend_Db_Select($this->_db);
         $select->from($this->_name);
         
@@ -95,7 +104,7 @@ class Resource extends App_Model
     public function checkRegistered($resource, $privilege){
         $select = new Zend_Db_Select($this->_db);
         $select->from(array('r' => $this->_name));
-        $select->join(array('p' => 'backoffice_privileges'), 'r.id = p.resource_id');
+        $select->join(array('p' => 'privileges'), 'r.id = p.flag_id');
         $select->where('r.name = ?', $resource);
         $select->where('p.name = ?', $privilege);
         $select->reset(Zend_Db_Table::COLUMNS);
@@ -104,5 +113,31 @@ class Resource extends App_Model
         $count = $this->_db->fetchOne($select);
         
         return $count != 0;
+    }
+    
+    /**
+     * Change the activation of a flag in a given environment
+     *
+     * @param int $id 
+     * @param string $env 
+     * @return void
+     */
+    public function toogleFlag($id, $env){
+        $select = new Zend_Db_Select($this->_db);
+        $select->from($this->_name);
+        $select->where('id = ?', $id);
+        
+        $row = $this->_db->fetchRow($select);
+        
+        switch($env){
+            case APP_STATE_PRODUCTION:
+                $row['active_on_prod'] = !$row['active_on_prod'];
+                break;
+            default:
+                $row['active_on_dev'] = !$row['active_on_dev'];
+                break;
+        }
+        
+        $this->save($row);
     }
 }

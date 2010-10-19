@@ -31,7 +31,7 @@ class ErrorController extends App_Backoffice_Controller
     public function init(){
         parent::init();
         
-        $this->_helper->layout()->setLayout('error');
+        $this->_helper->layout()->setLayout('layout');
     }
     
     /**
@@ -56,14 +56,14 @@ class ErrorController extends App_Backoffice_Controller
     }
     
     /**
-     * Handles the ACL errors
+     * Handles the Flag and Flipper errors
      *
      * @access public
      * @return void
      */
-    public function aclAction(){
+    public function flagflippersAction(){
         if (Zend_Registry::get('IS_DEVELOPMENT')) {
-            $this->title = 'ACL not found';
+            $this->title = 'Flag and Flipper not found';
             
             $this->view->originalController = $this->_getParam('originalController');
             $this->view->originalAction = $this->_getParam('originalAction');

@@ -1,13 +1,13 @@
 <?php
 /**
- * Form for adding new user groups in the application
+ * Form for adding new privileges in the application
  *
  * @category backoffice
  * @package backoffice_forms
  * @copyright Company
  */
 
-class GroupForm extends App_Backoffice_Form
+class PrivilegeForm extends App_Backoffice_Form
 {
     /**
      * Overrides init() in Zend_Form
@@ -22,38 +22,30 @@ class GroupForm extends App_Backoffice_Form
         // set the form's method
         $this->setMethod('post');
         
-        $uniqueGroupNameValidator = new Zend_Validate_Db_NoRecordExists(
-            array(
-                'table' => 'groups',
-                'field' => 'name',
-            )
-        );
-        
-        $groupModel = new Group();
-        $parentIdOptions = $groupModel->findPairs();
+        $flagModel = new Flag();
+        $flagIdOptions = $flagModel->findPairs();
         
         $name = new Zend_Form_Element_Text('name');
         $name->setOptions(
             array(
                 'label'      => 'Name',
-                'required'   => true,
+                'required'   => TRUE,
                 'filters'    => array(
                                     'StringTrim',
                                     'StripTags',
                                 ),
                 'validators' => array(
                                     'NotEmpty',
-                                    $uniqueGroupNameValidator,
                                 ),
             )
         );
         $this->addElement($name);
         
-        $parentId = new Zend_Form_Element_Select('parent_id');
-        $parentId->setOptions(
+        $flagId = new Zend_Form_Element_Select('flag_id');
+        $flagId->setOptions(
             array(
-                'label'      => 'Parent group',
-                'required'   => true,
+                'label'      => 'Flag',
+                'required'   => TRUE,
                 'filters'    => array(
                                     'StringTrim',
                                     'StripTags',
@@ -61,10 +53,26 @@ class GroupForm extends App_Backoffice_Form
                 'validators' => array(
                                     'NotEmpty',
                                 ),
-                'multiOptions' => $parentIdOptions,
+                'multiOptions' => $flagIdOptions,
             )
         );
-        $this->addElement($parentId);
+        $this->addElement($flagId);
+        
+        $description = new Zend_Form_Element_Text('description');
+        $description->setOptions(
+            array(
+                'label'      => 'Description',
+                'required'   => TRUE,
+                'filters'    => array(
+                                    'StringTrim',
+                                    'StripTags',
+                                ),
+                'validators' => array(
+                                    'NotEmpty',
+                                ),
+            )
+        );
+        $this->addElement($description);
         
         $id = new Zend_Form_Element_Hidden('id');
         $id->setOptions(
@@ -80,8 +88,8 @@ class GroupForm extends App_Backoffice_Form
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setOptions(
             array(
-                'label'      => 'Save user group',
-                'required'   => true,
+                'label'      => 'Save privilege',
+                'required'   => TRUE,
             )
         );
         $this->addElement($submit);
@@ -96,29 +104,11 @@ class GroupForm extends App_Backoffice_Form
      */
     public function populate($data){
         if (isset($data['id']) && is_numeric($data['id'])) {
-            $element = $this->getElement('parent_id');
+            $element = $this->getElement('flag_id');
             $options = $element->getMultiOptions();
             unset($options[$data['id']]);
             $element->setMultiOptions($options);
         }
         parent::populate($data);
-    }
-    
-    /**
-     * Overrides isValid() in App_Form
-     * 
-     * @param array $data 
-     * @access public
-     * @return bool
-     */
-    public function isValid($data){
-        if (isset($data['id']) && is_numeric($data['id'])) {
-            $this->getElement('name')
-                 ->getValidator('Zend_Validate_Db_NoRecordExists')
-                 ->setExclude(array('field' => 'id',
-                                    'value' => $data['id']));
-        }
-        
-        return parent::isValid($data);
     }
 }

@@ -25,7 +25,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @var bool
      * @access protected
      */
-    protected $_returnPaginators = FALSE;
+    protected $_returnPaginators = TRUE;
     
     /**
      * Receives an array of data that needs to be saved
@@ -388,6 +388,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         
         $paginator = Zend_Paginator::factory($select);
         $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(Zend_Registry::get('config')->paginator->items_per_page);
         
         return $paginator;
     }

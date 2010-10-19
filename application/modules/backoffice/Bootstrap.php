@@ -10,22 +10,12 @@
 class Backoffice_Bootstrap extends App_Bootstrap_Abstract {
 
     /**
-     * Inits the Access Control Lists
-     * 
-     * @access protected
-     * @return void     
-     */
-    protected function _initAcl() {
-        // init the acls - not used in the frontend
-    }
-    
-    /**
      * Inits the backoffice user actions logger (BigBrother)
      * 
      * @access protected
      * @return void     
      */
-    protected function _initBigBrother() {
+    protected function _initBigBrother(){
     }
     
     /**
@@ -34,7 +24,20 @@ class Backoffice_Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initSession() {
+    protected function _initSession(){
         Zend_Session::start();
+    }
+    
+    /**
+     * Inits the Zend Paginator component
+     *
+     * @access protected
+     * @return void
+     */
+    protected function _initPaginator(){
+        Zend_Paginator::setDefaultScrollingStyle(Zend_Registry::get('config')->paginator->scrolling_style);
+        Zend_View_Helper_PaginationControl::setDefaultViewPartial(
+            'default.phtml'
+        );
     }
 }

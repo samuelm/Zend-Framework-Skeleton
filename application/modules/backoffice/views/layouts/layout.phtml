@@ -80,11 +80,8 @@ $bodyClass = Zend_Registry::get('controllerName') . Zend_Registry::get('actionNa
                     <div class="inner"> 
                         <strong>
                             <a href="<?php echo $this->baseUrl();?>/profile/edit/">
-                                <?php if(!empty($user->firstname) && !empty($user->lastname)) : ?>
-                                    <?php echo $user->firstname . ' ' . $user->lastname;?>
-                                <?php else : ?>
-                                    John Doe
-                                <?php endif; ?>
+                                <a class="user" href="<?php echo $this->baseUrl();?>/profile/edit/"><?php echo $user->firstname . ' ' . $user->lastname;?></a>
+                                <?php echo $this->EasterEgg()->emoticon(); ?>
                             </a>
                         </strong>
                         <ul class="clearfix"> 

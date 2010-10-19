@@ -71,29 +71,29 @@ class App_Backoffice_Navigation
     protected function _getPages(){
         $pages = array(
             array(
-                'label' => 'Groups',
+                'label' => 'System',
                 'pages' => array(
                     array(
-                        'label' => 'List groups',
+                        'label' => 'Groups',
                         'controller' => 'groups',
                         'action' => 'index',
                     ),
-                ),
-            ),
-            array(
-                'label' => 'Users',
-                'pages' => array(
                     array(
-                        'label' => 'List users',
+                        'label' => 'Users',
                         'controller' => 'users',
                         'action' => 'index',
                     ),
+                    array(
+                        'label' => 'Privileges',
+                        'controller' => 'privileges',
+                        'action' => 'index',
+                    ),
+                    array(
+                        'label' => 'Flags',
+                        'controller' => 'flags',
+                        'action' => 'index',
+                    ),
                 ),
-            ),
-            array(
-                'label' => 'Profile',
-                'controller' => 'profile',
-                'action' => 'index'
             ),
         );
         

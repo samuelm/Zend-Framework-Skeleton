@@ -104,6 +104,9 @@ $helper = $this->listingUtilities($this->config);
                 });
             </script>-->
             <div class="pagination">
+                <?php if($this->paginator Instanceof Zend_Paginator && $this->paginator->count() > 1) : ?>
+                    <?php echo $this->paginator; ?>
+                <?php endif; ?>
             </div> 
         </div>
     </div> 

@@ -358,7 +358,7 @@ class Bootstrap extends App_Bootstrap_Abstract {
     }
     
     /**
-     * Initialize the ACL System
+     * Initialize the Flag and Flipper System
      *
      * @return void
      */

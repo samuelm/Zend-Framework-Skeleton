@@ -53,4 +53,21 @@ class ErrorController extends App_Frontend_Controller
         $this->getResponse()->clearBody();
         $this->view->content = $content;
     }
+    
+    /**
+     * Handles the Flag and Flipper errors
+     *
+     * @access public
+     * @return void
+     */
+    public function flagflippersAction(){
+        if (Zend_Registry::get('IS_DEVELOPMENT')) {
+            $this->title = 'Flag and Flipper not found';
+
+            $this->view->originalController = $this->_getParam('originalController');
+            $this->view->originalAction = $this->_getParam('originalAction');
+        } else {
+            $this->_dispatch404();
+        }
+    }
 }

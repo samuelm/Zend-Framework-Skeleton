@@ -8,13 +8,17 @@
  */
 
 /**
- * Handle different operations with the ACL and the functionality deploy
+ * Handle different operations with the Flag and Flippers
  */
 class App_FlagFlippers_Manager
 {
     public static $indexKey = 'FlagFlippers';
     private static $_membersAllowedResources = array(
-        'index',
+        'backoffice-index',
+    );
+    
+    private static $_guestsAllowedResources = array(
+        'backoffice-profile' => array('login'),
     );
     
     /**
@@ -57,6 +61,10 @@ class App_FlagFlippers_Manager
      * @return boolean
      */
     public function isAllowed($role, $resource = NULL, $action = NULL){
+        if(!empty($resource)){
+            $resource = strtolower(CURRENT_MODULE) . '-' . $resource;
+        }
+        
         return App_FlagFlippers_Manager::_getFromRegistry()->isAllowed($role, $resource, $action);
     }
     
@@ -127,24 +135,40 @@ class App_FlagFlippers_Manager
         }
         
         //Add all resources
-        $resourceModel = new Resource();
-        $resources = $resourceModel->fetchAll();
+        $flagModel = new Flag();
+        $flags = $flagModel->fetchAll();
         
-        foreach($resources as $resource){
-            $aclObject->addResource(new Zend_Acl_Resource($resource['name']));
+        foreach($flags as $flag){
+            $aclObject->addResource(new Zend_Acl_Resource($flag['name']));
         }
         
-        $aclObject->addResource('error');
+        $aclObject->addResource('frontend-error');
+        $aclObject->addResource('backoffice-error');
         
         //Populate the ACLs
-        $aclModel = new Acl();
-        $acls = $aclModel->fetchFullData();
+        $flipperModel = new Flipper();
+        $flippers = $flipperModel->fetchFullData();
         
-        foreach($acls as $acl){
-            if($acl['allow']){
-                $aclObject->allow($acl['group_name'], $acl['resource_name'], $acl['privilege_name']);
+        foreach($flippers as $flipper){
+            //Check flag
+            foreach($flags as $flag){
+                if($flipper['flag_name'] == $flag->name){
+                    break;
+                }
+            }
+            
+            switch(APPLICATION_ENV){
+                case APPLICATION_STATE_PRODUCTION:
+                    $flag = $flag->active_on_prod;
+                    break;
+                default:
+                    $flag = $flag->active_on_dev;
+            }
+            
+            if($flipper['allow'] && $flag){
+                $aclObject->allow($flipper['group_name'], $flipper['flag_name'], $flipper['privilege_name']);
             } else {
-                $aclObject->deny($acl['group_name'], $acl['resource_name'], $acl['privilege_name']);
+                $aclObject->deny($flipper['group_name'], $flipper['flag_name'], $flipper['privilege_name']);
             }
         }
         
@@ -153,8 +177,20 @@ class App_FlagFlippers_Manager
             $aclObject->allow('members', $resource);
         }
         
+        //Hardcode basic paths for guests
+        foreach(App_FlagFlippers_Manager::$_guestsAllowedResources as $resource => $roles){
+            if(!is_array($roles)){
+                $aclObject->allow('guests', $resource);
+            }else{
+                foreach($roles as $r){
+                    $aclObject->allow('guests', $resource, $r);
+                }
+            }
+        }
+        
         //Everbody can see the errors
-        $aclObject->allow(null, 'error');
+        $aclObject->allow(null, 'frontend-error');
+        $aclObject->allow(null, 'backoffice-error');
         
         //Admins are allowed everywhere
         $aclObject->allow('administrators');

@@ -24,7 +24,7 @@ class UserForm extends App_Backoffice_Form
         $this->setMethod('post');
         
         $groupModel = new Group();
-        $groupsOptions = $groupModel->getPairs();
+        $groupsOptions = $groupModel->findPairs();
         
         $uniqueUsernameValidator = new Zend_Validate_Db_NoRecordExists(
             array(

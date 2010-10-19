@@ -29,6 +29,15 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
     protected $_columnIndexes = array();
     
     /**
+     * Database datat types for the main table's columns.
+     * They must be in the same order as the columnNames
+     * 
+     * @var array
+     * @access protected
+     */
+    protected $_columnDataTypes = array();
+    
+    /**
      * Page title
      * 
      * @var string
@@ -64,6 +73,14 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
      * @access protected
      */
     protected $_addMessage = '';
+    
+    /**
+     * Control if we show the add button
+     * 
+     * @var boolean
+     * @access protected
+     */
+    protected $_showAddButton = TRUE;
     
     /**
      * Confirmation label to be displayed on the
@@ -120,7 +137,7 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
             'title'         => 'Delete',
             'link_class'    => 'ico',
             'img_alt'       => 'delete',
-            'img_url'       => '/images/led-ico/delete.png',
+            'img_url'       => '/images/led-ico/cross.png',
             'parameter'     => TRUE,
         ),
     );
@@ -223,6 +240,16 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
     }
     
     /**
+     * Getter for the showAddButton
+     *
+     * @access public
+     * @return boolean
+     */
+    public function canShowAddButton(){
+        return $this->_showAddButton;
+    }
+    
+    /**
      * Returns true if the current user can add 
      * a new item
      * 
@@ -234,7 +261,7 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
     }
     
     /**
-     * Queries the ACL and returns true if the current
+     * Queries the Flag and Flippers and returns true if the current
      * user is allowed to access the requested page.
      * 
      * @param string $action 
@@ -288,11 +315,19 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
             $url .= '?id=' . $item['id'];
         }
         
-        $link = '<li>' . PHP_EOL .
-                '<a class="' . $action['link_class'] . '"href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
-                '<img src="' . $this->_baseUrl . $action['img_url'] . '" alt="' . $action['img_alt'] . '" />' . PHP_EOL .
-                '</a>' . PHP_EOL .
-                '</li>' . PHP_EOL;
+        if(!isset($action['icon']) || (isset($action['icon']) && $action['icon'])){
+            $link = '<li>' . PHP_EOL .
+                    '<a class="' . $action['link_class'] . '"href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
+                    '<img src="' . $this->_baseUrl . $action['img_url'] . '" alt="' . $action['img_alt'] . '" />' . PHP_EOL .
+                    '</a>' . PHP_EOL .
+                    '</li>' . PHP_EOL;
+        }else{
+            $link = '<li>' . PHP_EOL .
+                    '<a class="' . $action['link_class'] . '"href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
+                    $action['title'] . PHP_EOL .
+                    '</a>' . PHP_EOL .
+                    '</li>' . PHP_EOL;
+        }
         
         return $this->_return($link, $echo);
     }
@@ -312,9 +347,9 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
         }
         
         $links = array();
-        foreach ($order as $action) {
-            if ($this->can($action)) {
-                $links[]= $this->link($action, $item, FALSE);
+        foreach($order as $action) {
+            if($this->can($action)){
+                $links[] = $this->link($action, $item, FALSE);
             }
         }
         
@@ -445,9 +480,15 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
             }
         } else {
             $time = @strtotime($item);
-            if ($time) {
+            if($time){
                 $result = $this->view->formatDate($item);
-            } else {
+            }else if(isset($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index] == 'boolean'){
+                if((bool) $item){
+                    $result = '<img src="/images/led-ico/accept.png" />';
+                }else{
+                    $result = $item;
+                }
+            }else{
                 $result = $item;
             }
         }

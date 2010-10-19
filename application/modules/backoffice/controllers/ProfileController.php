@@ -76,7 +76,7 @@ class ProfileController extends App_Backoffice_Controller
         if($user->id == 1){
             $this->_helper->FlashMessenger(
                 array(
-                    'msg-success' => 'Please don\'t change the admin password in this release.',
+                    'msg-warn' => 'Please don\'t change the admin password in this release.',
                 )
             );
             $this->_redirect('/profile/');

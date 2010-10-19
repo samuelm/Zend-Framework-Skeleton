@@ -1,6 +1,6 @@
 <?php
 /**
- * Model for managing the ACLs in the application.
+ * Model for managing the Flippers in the application.
  *
  * It operates according to the following rules:
  * - each controller is considered a resource
@@ -13,7 +13,7 @@
  * @copyright Company
  */
 
-class Acl extends App_Model
+class Flipper extends App_Model
 {
     /**
      * Column for the primary key
@@ -29,10 +29,10 @@ class Acl extends App_Model
      * @var string
      * @access protected
      */
-    protected $_name = 'backoffice_acls';
+    protected $_name = 'flippers';
     
     /**
-     * Finds all the ACLs associated with a certain group
+     * Finds all the Flippers associated with a certain group
      * 
      * @param int $groupId 
      * @access public
@@ -47,7 +47,7 @@ class Acl extends App_Model
     }
     
     /**
-     * Returns the full ACL data
+     * Returns the full Flippers data
      * 
      * @access public
      * @return void
@@ -55,15 +55,15 @@ class Acl extends App_Model
     public function fetchFullData(){
         $select = new Zend_Db_Select($this->_db);
         $select->from(array('a' => $this->_name));
-        $select->join(array('p' => 'backoffice_privileges'), 'a.privilege_id = p.id');
-        $select->join(array('r' => 'backoffice_resources'), 'a.resource_id = r.id');
-        $select->join(array('g' => 'backoffice_groups'), 'a.group_id = g.id');
+        $select->join(array('p' => 'privileges'), 'a.privilege_id = p.id');
+        $select->join(array('f' => 'flags'), 'a.flag_id = f.id');
+        $select->join(array('g' => 'groups'), 'a.group_id = g.id');
         $select->reset(Zend_Db_Table::COLUMNS);
         $select->columns(
             array(
                 'a.*', 
                 'p.name AS privilege_name', 
-                'r.name AS resource_name', 
+                'f.name AS flag_name', 
                 'g.name AS group_name',
             )
         );
@@ -79,13 +79,13 @@ class Acl extends App_Model
      * @return void
      */
     public function savePermissions($data){
-        foreach ($data['acl'] as $resourceId => $privileges) {
+        foreach ($data['flipper'] as $resourceId => $privileges) {
             foreach($privileges as $privilegeId => $allow) {
                 if ($allow) {
                     try {
                         $this->insert(array(
                             'group_id' => $data['group_id'],
-                            'resource_id' => $resourceId,
+                            'flag_id' => $resourceId,
                             'privilege_id' => $privilegeId,
                             'allow' => 1
                         ));
@@ -95,11 +95,22 @@ class Acl extends App_Model
                 } else {
                     $this->delete(array(
                         'group_id' => $data['group_id'],
-                        'resource_id' => $resourceId,
+                        'flag_id' => $resourceId,
                         'privilege_id' => $privilegeId,
                     ));
                 }
             }
         }
+    }
+    
+    /**
+     * Deletes all associations with the given privilege id
+     * 
+     * @param int $privilegeId
+     * @access public
+     * @return void
+     */
+    public function deleteByPrivilegeId($privilegeId){
+        $this->delete($this->_db->quoteInto('privilege_id = ?', $privilegeId));
     }
 }

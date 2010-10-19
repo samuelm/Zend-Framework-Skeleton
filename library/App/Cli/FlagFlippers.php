@@ -1,20 +1,20 @@
 <?php
 /**
- * Creates automatic inserts for the ACL tool
+ * Creates automatic inserts for the Flag and Flipper system
  *
  * @category App
  * @package App_Cli
- * @subpackage App_Cli_Acl
+ * @subpackage App_Cli_FlagFlippers
  * @copyright Company
  */
 
-class App_Cli_Acl 
+class App_Cli_FlagFlippers
 {
     /**
      * Singleton instance
      * 
      * @static
-     * @var App_Cli_Acl
+     * @var App_Cli_FlagFlippers
      * @access protected
      */
     protected static $_instance;
@@ -46,7 +46,7 @@ class App_Cli_Acl
      */
     public static function getInstance(){
         if (NULL === self::$_instance) {
-            self::$_instance = new App_Cli_Acl();
+            self::$_instance = new App_Cli_FlagFlippers();
         }
         
         return self::$_instance;
@@ -74,22 +74,22 @@ class App_Cli_Acl
     public function generateInserts(array $resources){
         $quotedName = $this->_db->quoteIdentifier('name');
         $quotedDescription = $this->_db->quoteIdentifier('description');
-        $quotedResourceTable = $this->_db->quoteIdentifier('backoffice_resources');
+        $quotedFlagsTable = $this->_db->quoteIdentifier('flags');
         
         $insertResourceTemplate = sprintf(
             'INSERT IGNORE INTO %s (%s, %s) VALUES (?, ?);',
-            $quotedResourceTable,
+            $quotedFlagsTable,
             $quotedName,
             $quotedDescription
         );
         
         $selectResourceTemplate = sprintf(
-            'SET @resource_id := (SELECT id FROM %s WHERE %s = ?);',
-            $quotedResourceTable,
+            'SET @flag_id := (SELECT id FROM %s WHERE %s = ?);',
+            $quotedFlagsTable,
             $quotedName
         );
         
-        $insertPrivilegeTemplate = '(@resource_id, %s, %s)';
+        $insertPrivilegeTemplate = '(@flag_id, %s, %s)';
         
         $inserts = array();
         foreach ($resources as $resource) {
@@ -103,8 +103,8 @@ class App_Cli_Acl
             // ready the insert privilege query
             $insertPrivilegeSql = sprintf(
                 'INSERT IGNORE INTO %s (%s, %s, %s) VALUES ',
-                $this->_db->quoteIdentifier('backoffice_privileges'),
-                $this->_db->quoteIdentifier('resource_id'),
+                $this->_db->quoteIdentifier('privileges'),
+                $this->_db->quoteIdentifier('flag_id'),
                 $quotedName,
                 $quotedDescription
             );

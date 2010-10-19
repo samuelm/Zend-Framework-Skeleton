@@ -43,7 +43,7 @@ class ChangePasswordForm extends App_Backoffice_Form
         
         $passwordHistoryValidator = new App_Validate_NoPasswordExists(
             array(
-                'table' => 'backoffice_password_log',
+                'table' => 'password_log',
                 'field' => 'password',
                 'treatment' => 'User::hashPassword',
                 'userPkField' => 'user_id',

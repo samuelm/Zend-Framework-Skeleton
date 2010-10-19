@@ -26,7 +26,7 @@ class PasswordLog extends App_Model
      * @var string
      * @access protected
      */
-    protected $_name = 'backoffice_password_log';
+    protected $_name = 'password_log';
     
     /**
      * Saves a password in the log under the current user_id. If there are
@@ -49,7 +49,7 @@ class PasswordLog extends App_Model
         $select = new Zend_Db_Select($this->_db);
         $select->from($this->_name);
         $select->where('user_id = ?', $user->id);
-        $select->order('created ASC');
+        $select->order('created_at ASC');
         
         $rows = $this->_db->fetchAll($select);
         
@@ -60,7 +60,7 @@ class PasswordLog extends App_Model
         $this->insert(array(
             'user_id' => $user->id,
             'password' => $password,
-            'created' => new Zend_Db_Expr('NOW()'),
+            'created_at' => new Zend_Db_Expr('NOW()'),
         ));
     }
 }

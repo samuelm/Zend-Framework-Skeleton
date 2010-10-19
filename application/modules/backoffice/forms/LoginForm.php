@@ -65,7 +65,7 @@ class LoginForm extends App_Backoffice_Form
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setOptions(
             array(
-                'label'      => 'Log in',
+                'label'      => 'Log in →',
                 'required'   => true,
             )
         );

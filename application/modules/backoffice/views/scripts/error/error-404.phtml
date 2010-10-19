@@ -9,22 +9,17 @@
  */
 ?>
 
-<div class="box box-100"><!-- box full-width --> 
-    <div class="boxin"> 
-        <div id="errorpage" class="clearfix">
-            <!--<img class="cat" src="<?php echo $this->baseUrl();?>/css/img/error-404-02.gif" alt="Error 404">-->
-            <h1>Page not found</h1>
-            <p>
-                The URL you requested was not found.
-            </p>
-            <p><a class="alt" href="javascript:history.back();">← Go back</a></p>
-        </div>
-    </div> 
+<div id="errorpage" class="clearfix">
+    <h1>Page not found</h1>
+    <p>
+        The URL you requested was not found.
+    </p>
+    <p><a href="javascript:history.back();">← Go back</a></p>
 </div>
 <script type="text/javascript" charset="utf-8">
     // Random 404 lolcats
     $(document).ready(function(){
-        var imgTotal=2;
+        var imgTotal=7;
         var randomNumber = Math.round(Math.random()*(imgTotal-1))+1;
         var imgPath=('/images/error-404-0'+randomNumber+'.gif');
         var img = $("<img>").attr({
@@ -35,5 +30,3 @@
         $('div#errorpage').prepend(img);
     });
 </script>
-
-
