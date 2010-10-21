@@ -29,11 +29,32 @@ class PasswordLog extends App_Model
     protected $_name = 'password_log';
     
     /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_PasswordLog';
+    
+    /**
+     * Define the relationship with another tables
+     *
+     * @var array
+     */
+    protected $_referenceMap = array(
+        'User' => array(
+            'columns' => 'user_id',
+            'refTableClass' => 'User',
+            'refColumns' => 'id'
+        ),
+    );
+    
+    /**
      * Saves a password in the log under the current user_id. If there are
      * more that 4 password, the oldest is deleted.
      *
      * By this point, the password should already be hashed
-     * using User::hashPassword()
+     * using BackofficeUser::hashPassword()
      * 
      * @param string $password 
      * @access public

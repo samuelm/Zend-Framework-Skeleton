@@ -29,7 +29,7 @@ class ChangePasswordForm extends App_Backoffice_Form
             array(
                 'table' => 'backoffice_users',
                 'field' => 'password',
-                'treatment' => 'User::hashPassword',
+                'treatment' => 'BackofficeUser::hashPassword',
                 'userPkValue' => $user->id,
             )
         );
@@ -45,7 +45,7 @@ class ChangePasswordForm extends App_Backoffice_Form
             array(
                 'table' => 'password_log',
                 'field' => 'password',
-                'treatment' => 'User::hashPassword',
+                'treatment' => 'BackofficeUser::hashPassword',
                 'userPkField' => 'user_id',
                 'userPkValue' => $user->id,
             )

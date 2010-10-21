@@ -127,7 +127,7 @@ class App_FlagFlippers_Manager
         }
         
         //Add all users
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         $users = $userModel->findAll();
         
         foreach($users as $user){

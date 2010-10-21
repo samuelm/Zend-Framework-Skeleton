@@ -149,7 +149,7 @@ class Bootstrap extends App_Bootstrap_Abstract {
             APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/controllers',
             APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/forms',
             APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/models',
-            ROOT_PATH . '/library/App/Shared/Models',
+            ROOT_PATH . '/library/App/Model',
             get_include_path() ,
         );
         

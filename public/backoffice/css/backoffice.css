@@ -272,7 +272,7 @@ border-right: 0 !important;
 /* navigation */
 ul#nav {
     position:absolute;
-    top:-30px;
+    top:-32px;
     left:222px;
     margin-left: 1%;
     z-index:9999;

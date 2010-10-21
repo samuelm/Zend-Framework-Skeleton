@@ -40,7 +40,7 @@ class ProfileController extends App_Backoffice_Controller
         $this->title = 'Edit your profile';
         
         $form = new ProfileForm();
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         
         if($this->getRequest()->isPost()){
             if($form->isValid($this->getRequest()->getPost())){
@@ -83,7 +83,7 @@ class ProfileController extends App_Backoffice_Controller
         }
         
         $form = new ChangePasswordForm();
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         
         if($this->getRequest()->isPost()){
             if($form->isValid($this->getRequest()->getPost())){
@@ -116,7 +116,7 @@ class ProfileController extends App_Backoffice_Controller
         $form = new LoginForm();
         if ($this->getRequest()->isPost()) {
             if($form->isValid($this->getRequest()->getPost())){
-                $userModel = new User();
+                $userModel = new BackofficeUser();
                 if($userModel->login($form->getValue('username'), $form->getValue('password'))){
                     $session = new Zend_Session_Namespace('App.Backoffice.Controller');
                     $request = unserialize($session->request);

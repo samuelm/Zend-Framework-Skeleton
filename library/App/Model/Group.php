@@ -25,6 +25,27 @@ class Group extends App_Model
     protected $_name = 'groups';
     
     /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_Group';
+    
+    /**
+     * Define the relationship with another tables
+     *
+     * @var array
+     */
+    protected $_referenceMap = array(
+        'Parent' => array(
+            'columns' => 'parent_id',
+            'refTableClass' => 'Group',
+            'refColumns' => 'id'
+        ),
+    );
+    
+    /**
      * Name of the column whose content will be displayed
      * on <select> widgets
      * 
@@ -66,7 +87,7 @@ class Group extends App_Model
         $select->where($where);
         
         $rows = $this->_db->fetchAll($select);
-        $userGroupModel = new UserGroup();
+        $userGroupModel = new BackofficeUserGroup();
         
         foreach ($rows as $row) {
             $children = $this->findByParentId($row['id']);

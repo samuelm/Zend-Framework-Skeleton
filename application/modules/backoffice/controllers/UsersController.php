@@ -30,7 +30,7 @@ class UsersController extends App_Backoffice_Controller
     public function indexAction(){
         $this->title = '';
         
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         $this->view->paginator = $userModel->findAll($this->_getPage());
     }
     
@@ -45,7 +45,7 @@ class UsersController extends App_Backoffice_Controller
         $this->title = 'Add a new user';
         
         $form = new UserAddForm();
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         
         if($this->getRequest()->isPost()){
             if($form->isValid($this->getRequest()->getPost())){
@@ -74,7 +74,7 @@ class UsersController extends App_Backoffice_Controller
         $this->title = 'Edit this user';
         
         $form = new UserForm();
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         
         if($this->getRequest()->isPost()){
             if($form->isValid($this->getRequest()->getPost())){
@@ -141,7 +141,7 @@ class UsersController extends App_Backoffice_Controller
     public function viewAction(){
         $this->title = 'User details';
         
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         $id = $this->_getParam('id');
         
         if(!is_numeric($id)){
@@ -181,7 +181,7 @@ class UsersController extends App_Backoffice_Controller
         $this->title = 'Delete this user';
         
         $form = new DeleteForm();
-        $userModel = new User();
+        $userModel = new BackofficeUser();
         
         if($this->getRequest()->isPost()){
             if($form->isValid($this->getRequest()->getPost())){

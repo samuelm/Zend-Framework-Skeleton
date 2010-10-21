@@ -25,6 +25,27 @@ class Privilege extends App_Model
     protected $_name = 'privileges';
     
     /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_Privilege';
+    
+    /**
+     * Define the relationship with another tables
+     *
+     * @var array
+     */
+    protected $_referenceMap = array(
+        'Flag' => array(
+            'columns' => 'flag_id',
+            'refTableClass' => 'Flag',
+            'refColumns' => 'id'
+        ),
+    );
+    
+    /**
      * Finds a privilege based on its name and the id of the
      * resource it belongs to
      * 

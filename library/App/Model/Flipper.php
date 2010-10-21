@@ -32,6 +32,37 @@ class Flipper extends App_Model
     protected $_name = 'flippers';
     
     /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_Flipper';
+    
+    /**
+     * Define the relationship with another tables
+     *
+     * @var array
+     */
+    protected $_referenceMap = array(
+        'Group' => array(
+            'columns' => 'group_id',
+            'refTableClass' => 'Group',
+            'refColumns' => 'id'
+        ),
+        'Flag' => array(
+            'columns' => 'flag_id',
+            'refTableClass' => 'Flag',
+            'refColumns' => 'id'
+        ),
+        'Privilege' => array(
+            'columns' => 'privilege_id',
+            'refTableClass' => 'Privilege',
+            'refColumns' => 'id'
+        ),
+    );
+    
+    /**
      * Finds all the Flippers associated with a certain group
      * 
      * @param int $groupId 

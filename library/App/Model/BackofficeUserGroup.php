@@ -9,7 +9,7 @@
  * @copyright Company
  */
 
-class UserGroup extends App_Model
+class BackofficeUserGroup extends App_Model
 {
     /**
      * Column for the primary key
@@ -26,6 +26,32 @@ class UserGroup extends App_Model
      * @access protected
      */
     protected $_name = 'backoffice_users_groups';
+    
+    /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_BackofficeUserGroup';
+    
+    /**
+     * Define the relationship with another tables
+     *
+     * @var array
+     */
+    protected $_referenceMap = array(
+        'User' => array(
+            'columns' => 'user_id',
+            'refTableClass' => 'User',
+            'refColumns' => 'id'
+        ),
+        'Group' => array(
+            'columns' => 'group_id',
+            'refTableClass' => 'Group',
+            'refColumns' => 'id'
+        ),
+    );
     
     /**
      * Returns all the groups an user is associated

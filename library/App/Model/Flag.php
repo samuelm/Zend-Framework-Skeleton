@@ -26,6 +26,14 @@ class Flag extends App_Model
     protected $_name = 'flags';
     
     /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_Flag';
+    
+    /**
      * Name of the column whose content will be displayed
      * on <select> widgets
      * 

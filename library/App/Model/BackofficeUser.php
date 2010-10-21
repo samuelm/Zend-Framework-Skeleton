@@ -2,12 +2,12 @@
 /**
  * Model that manages the users within the application
  *
- * @category backoffice
- * @package backoffice_models
+ * @category App
+ * @package App_Model
  * @copyright Company
  */
 
-class User extends App_Model
+class BackofficeUser extends App_Model
 {
     /**
      * Column for the primary key
@@ -24,6 +24,14 @@ class User extends App_Model
      * @access protected
      */
     protected $_name = 'backoffice_users';
+    
+    /**
+     * Holds the associated model class
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $_rowClass = 'App_Table_BackofficeUser';
     
     /**
      * Logs an user in the application based on his
@@ -43,7 +51,7 @@ class User extends App_Model
         
         // checking credentials
         $adapter->setIdentity($username);
-        $adapter->setCredential(User::hashPassword($password));
+        $adapter->setCredential(BackofficeUser::hashPassword($password));
         $result = $adapter->authenticate();
         
         if($result->isValid()) {
@@ -84,7 +92,7 @@ class User extends App_Model
         
         $user = Zend_Auth::getInstance()->getIdentity();
         
-        $password = User::hashPassword($password);
+        $password = BackofficeUser::hashPassword($password);
         
         $passwordLogModel = new PasswordLog();
         $passwordLogModel->savePassword($password);
@@ -128,7 +136,7 @@ class User extends App_Model
             $groups = array();
         }
         
-        $userGroupModel = new UserGroup();
+        $userGroupModel = new BackofficeUserGroup();
         $userGroupModel->saveForUser($groups, $id);
         
         return $id;
@@ -143,7 +151,7 @@ class User extends App_Model
      */
     public function insert($data){
         $data['last_password_update'] = new Zend_Db_Expr('NOW()');
-        $data['password'] = User::hashPassword($data['password']);
+        $data['password'] = BackofficeUser::hashPassword($data['password']);
         $data['password_valid'] = 0;
         
         return parent::insert($data);
@@ -173,7 +181,7 @@ class User extends App_Model
         $paginator = parent::findAll($page);
         $items = array();
         
-        $userGroupModel = new UserGroup();
+        $userGroupModel = new BackofficeUserGroup();
         
         foreach ($paginator as $item) {
             $item['groups'] = array();
@@ -200,7 +208,7 @@ class User extends App_Model
         if(!empty($row)){
             $row['groups'] = array();
             
-            $userGroupModel = new UserGroup();
+            $userGroupModel = new BackofficeUserGroup();
             
             foreach($userGroupModel->findByUserId($userId, TRUE) as $group){
                 $row['groups'][$group['id']] = $group['name'];
@@ -230,7 +238,7 @@ class User extends App_Model
         $select->where($where);
         
         $rows = $this->_db->fetchAll($select);
-        $userGroupModel = new UserGroup();
+        $userGroupModel = new BackofficeUserGroup();
         
         foreach ($rows as $row) {
             $userGroupModel->deleteByUserId($row['id']);
