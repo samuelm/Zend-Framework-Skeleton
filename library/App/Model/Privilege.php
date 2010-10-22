@@ -54,7 +54,7 @@ class Privilege extends App_Model
      * @access public
      * @return void
      */
-    public function findByNameAndResourceId($name, $resourceId){
+    public function findByNameAndFlagId($name, $resourceId){
         $select = new Zend_Db_Select($this->_db);
         $select->from($this->_name);
         $select->where('name = ?', $name);
@@ -71,7 +71,7 @@ class Privilege extends App_Model
      * @access public
      * @return void
      */
-    public function findByResourceId($resourceId){
+    public function findByFlagId($resourceId){
         $select = new Zend_Db_Select($this->_db);
         $select->from($this->_name);
         $select->where('flag_id = ?', $resourceId);
