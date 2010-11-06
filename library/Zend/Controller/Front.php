@@ -567,7 +567,7 @@ class Zend_Controller_Front
         if ((null !== $request) && method_exists($request, 'getBaseUrl')) {
             return $request->getBaseUrl();
         }
-        
+
         return $this->_baseUrl;
     }
 
