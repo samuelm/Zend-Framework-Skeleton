@@ -93,7 +93,7 @@ class Flag extends App_Model
             if (in_array($row['name'], $this->_hardcodedResources)) {
                 unset($rows[$key]);
             } else {
-                $rows[$key]['privileges'] = $privilegeModel->findByResourceId($row['id']);
+                $rows[$key]['privileges'] = $privilegeModel->findByFlagId($row['id']);
             }
         }
         
