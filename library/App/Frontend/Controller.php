@@ -8,6 +8,12 @@
 
 abstract class App_Frontend_Controller extends App_Controller
 {
+    //Unique place to store the namespace keys
+    protected $_requestNamespaceKey = 'FrontendRequest';
+    
+    //Store the namespaces
+    protected $_session = array();
+    
     /**
      * Overrides init() from Neo_Controller
      * 
@@ -16,6 +22,8 @@ abstract class App_Frontend_Controller extends App_Controller
      */
     public function init(){
         parent::init();
+        
+        $this->t = Zend_Registry::get('Zend_Translate');
     }
     
     /**
@@ -35,58 +43,55 @@ abstract class App_Frontend_Controller extends App_Controller
         Zend_Registry::set('actionName', $actionName);
         // check the Flag and Flipper
         $this->_checkFlagFlippers();
+        
+        $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery.min.js');
+        $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery-ui.min.js');
+        $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery-ui-i18n.js');
+        
+        $this->view->yahooKey = YAHOO_API_KEY;
+        $this->view->jsLocale = JS_LOCALE;
+        $this->view->user = BaseUser::getSession();
     }
     
     /**
-     * Queries the Flag and Flippers and redirects the user to a different
-     * page if he/her doesn't have the required permissions for
-     * accessing the current page
+     * Overrides postDispatch() from App_Controller
      * 
-     * @access protected
+     * @access public
      * @return void
      */
-    protected function _checkFlagFlippers(){
-        $controllerName = Zend_Registry::get('controllerName');
-        $actionName = Zend_Registry::get('actionName');
+    public function postDispatch(){
+        parent::postDispatch();
         
-        $auth = Zend_Auth::getInstance();
-        
-        // load the identity
-        if(!$auth->hasIdentity()){
-            $user = new stdClass();
-            $user->username = 'guests';
-            $auth->getStorage()->write($user);
+        $this->view->headTitle($this->title);
+    }
+    
+    /**
+     * Gets the current page. Convenience method for using
+     * paginators
+     * 
+     * @param int $default 
+     * @access protected
+     * @return int
+     */
+    protected function _getPage($default = 1){
+        $page = $this->_getParam('page');
+        if (!$page || !is_numeric($page)) {
+            return $default;
         }
         
-        $user = $auth->getIdentity();
-        
-        if(Zend_Registry::get('IS_DEVELOPMENT') && $controllerName != 'error'){
-            $flagModel = new Flag();
-            
-            $flag = strtolower(CURRENT_MODULE) . '-' . $controllerName;
-            
-            if (!$flagModel->checkRegistered($flag, $actionName)) {
-                $params = array(
-                    'originalController' => $controllerName,
-                    'originalAction' => $actionName
-                );
-                
-                $this->_forward('flagflipper', 'error', NULL, $params);
-                return;
-            }
+        return $page;
+    }
+    
+    /**
+     * Get the session namespace we're using
+     *
+     * @return Zend_Session_Namespace
+     */
+    protected function _getSessionNamespace($key){
+        if(NULL === $this->_session[$key]){
+            $this->_session[$key] = new Zend_Session_Namespace($key);
         }
         
-        if(!App_FlagFlippers_Manager::isAllowed($user->username, $controllerName, $actionName)){
-            if ($user->username == 'guests') {
-                // the user is a guest, save the request and redirect him to
-                // the login page
-                $session = new Zend_Session_Namespace('App.Backoffice.Controller');
-                $session->request = serialize($this->getRequest());
-                $this->_redirect('/profile/login/');
-            } else {
-                $this->_redirect('/error/forbidden/');
-            }
-        }
+        return $this->_session[$key];
     }
 }
-

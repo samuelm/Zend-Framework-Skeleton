@@ -17,7 +17,7 @@
  * @subpackage Bootstrap
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: BootstrapAbstract.php 20988 2010-02-08 16:44:44Z matthew $
+ * @version    $Id: BootstrapAbstract.php 23278 2010-10-30 12:50:21Z ramon $
  */
 
 /**
@@ -95,7 +95,7 @@ abstract class Zend_Application_Bootstrap_BootstrapAbstract
      *
      * @param  Zend_Application|Zend_Application_Bootstrap_Bootstrapper $application
      * @return void
-     * @throws Zend_Application_Bootstrap_Exception When invalid applicaiton is provided
+     * @throws Zend_Application_Bootstrap_Exception When invalid application is provided
      */
     public function __construct($application)
     {
@@ -163,7 +163,7 @@ abstract class Zend_Application_Bootstrap_BootstrapAbstract
      */
     public function hasOption($key)
     {
-        return in_array($key, $this->_optionKeys);
+        return in_array(strtolower($key), $this->_optionKeys);
     }
 
     /**
@@ -349,6 +349,7 @@ abstract class Zend_Application_Bootstrap_BootstrapAbstract
                 if (0 === strcasecmp($resource, $pluginName)) {
                     return $this->_pluginResources[$pluginName];
                 }
+                continue;
             }
 
             if (class_exists($plugin)) { //@SEE ZF-7550

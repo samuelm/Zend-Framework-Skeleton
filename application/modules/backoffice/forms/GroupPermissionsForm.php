@@ -27,20 +27,21 @@ class GroupPermissionsForm extends App_Backoffice_Form
         
         foreach ($flags as $flag) {
             $displayGroup = array();
-            foreach ($flag['privileges'] as $privilege) {
-                $checkbox = new Zend_Form_Element_Checkbox('flipper_' . $flag['id'] . '_' . $privilege['id']);
+            
+            foreach($flag->privileges as $privilege){
+                $checkbox = new Zend_Form_Element_Checkbox('flipper_' . $flag->id . '_' . $privilege->id);
                 $checkbox->setOptions(
                     array(
-                        'label' => '/' . $flag['name'] . '/' . $privilege['name'] . '/ (' . $privilege['description'] . ' )',
+                        'label' => '/' . $flag->name . '/' . $privilege->name . '/ (' . $privilege->description . ')',
                     )
                 );
                 $this->addElement($checkbox);
                 $displayGroup[] = $checkbox->getName();
             }
             
-            $displayGroupTitle = ucfirst($flag['name']) . ' ( ' . $flag['description'] . ' )';
-            $this->addDisplayGroup($displayGroup, $flag['name'])
-                 ->getDisplayGroup($flag['name'])
+            $displayGroupTitle = ucfirst($flag->name) . ' (' . $flag->description . ')';
+            $this->addDisplayGroup($displayGroup, $flag->name)
+                 ->getDisplayGroup($flag->name)
                  ->setLegend($displayGroupTitle);
         }
         
@@ -72,16 +73,14 @@ class GroupPermissionsForm extends App_Backoffice_Form
      * @access public
      * @return void
      */
-    public function populate(array $data){
-        $parsed = array('group_id' => $data['group_id']);
-        unset($data['group_id']);
+    public function populate($data, $id){
+        $parsed = array('group_id' => $id);
         
-        foreach ($data as $flipper) {
-            if ($flipper['allow']) {
+        foreach ($data as $flipper){
+            if($flipper['allow']){
                 $parsed['flipper_' . $flipper['flag_id'] . '_' . $flipper['privilege_id']] = 1;
             }
         }
-        
         parent::populate($parsed);
     }
     

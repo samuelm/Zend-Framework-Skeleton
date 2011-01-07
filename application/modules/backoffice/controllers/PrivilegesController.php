@@ -116,7 +116,7 @@ class PrivilegesController extends App_Backoffice_Controller
                 $this->_redirect('/privileges/');
             }
             
-            $form->populate($row);
+            $form->populate($row->toArray());
             $this->view->item = $row;
         }
         
@@ -163,7 +163,7 @@ class PrivilegesController extends App_Backoffice_Controller
                 $this->_redirect('/privileges/');
             }
             
-            $form->populate($row);
+            $form->populate($row->toArray());
             $this->view->item = $row;
         }
         

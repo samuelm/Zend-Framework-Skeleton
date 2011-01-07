@@ -18,7 +18,7 @@ $autoloader = Zend_Loader_Autoloader::getInstance();
 abstract class BaseControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase {
 
     public function setUp() {
-        $application = new Zend_Application(APP_ENVIRONMENT, APP_PATH . '/config/app.ini');
+        $application = new Zend_Application(APP_ENVIRONMENT, APP_PATH . '/configs/application.ini');
         $this->bootstrap = array($application->getBootstrap(), 'bootstrap');
         return parent::setUp();
     }

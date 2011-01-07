@@ -60,21 +60,6 @@ class Flag extends App_Model
     }
     
     /**
-     * Finds a resource based on its name
-     * 
-     * @param string $name 
-     * @access public
-     * @return void
-     */
-    public function findByName($name){
-        $select = new Zend_Db_Select($this->_db);
-        $select->from($this->_name);
-        $select->where('name = ?', $name);
-        
-        return $this->_db->fetchRow($select);
-    }
-    
-    /**
      * Returns an array with all resources and their associated
      * privileges
      * 
@@ -82,22 +67,24 @@ class Flag extends App_Model
      * @return array
      */
     public function getAllFlagsAndPrivileges(){
-        $select = new Zend_Db_Select($this->_db);
+        $select = $this->select();
         $select->from($this->_name);
+        $select->order('name ASC');
         
-        $rows = $this->_db->fetchAll($select);
+        $rows = $this->fetchAll($select);
+        $items = array();
         
         $privilegeModel = new Privilege();
         
-        foreach ($rows as $key => $row) {
-            if (in_array($row['name'], $this->_hardcodedResources)) {
-                unset($rows[$key]);
-            } else {
-                $rows[$key]['privileges'] = $privilegeModel->findByFlagId($row['id']);
+        foreach($rows as $key => $flag){
+            if(!in_array($flag->name, $this->_hardcodedResources)){
+                $flag->privileges = $flag->findDependentRowset('Privilege');
+                
+                $items[] = $flag;
             }
         }
         
-        return $rows;
+        return $items;
     }
     
     /**
@@ -131,21 +118,21 @@ class Flag extends App_Model
      * @return void
      */
     public function toogleFlag($id, $env){
-        $select = new Zend_Db_Select($this->_db);
+        $select = $this->select();
         $select->from($this->_name);
         $select->where('id = ?', $id);
         
-        $row = $this->_db->fetchRow($select);
+        $row = $this->fetchRow($select);
         
         switch($env){
             case APP_STATE_PRODUCTION:
-                $row['active_on_prod'] = !$row['active_on_prod'];
+                $row->active_on_prod = !$row->active_on_prod;
                 break;
             default:
-                $row['active_on_dev'] = !$row['active_on_dev'];
+                $row->active_on_dev = !$row->active_on_dev;
                 break;
         }
         
-        $this->save($row);
+        $row->save();
     }
 }

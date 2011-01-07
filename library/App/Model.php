@@ -40,27 +40,28 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @return int
      */
     public function save(array $data){
-        if(isset($data[$this->_primary]) && $data[$this->_primary]) {
+        $primary = (is_array($this->_primary)? $this->_primary[1] : $this->_primary);
+        
+        if(isset($data[$primary]) && $data[$primary]) {
             // we have a non-null value for the primary key, check if we can update
-            $select = new Zend_Db_Select($this->_db);
-            $select->from($this->_name);
-            $select->where($this->_primary . '= ?', $data[$this->_primary]);
+            $select = $this->_select();
+            $select->where($primary . '= ?', $data[$primary]);
             $select->reset(Zend_Db_Table::COLUMNS);
-            $select->columns(array('COUNT(' . $this->_primary . ')'));
+            $select->columns(array('COUNT(' . $primary . ')'));
             
-            if($this->_db->fetchOne($select) == 1) { 
+            if($this->fetchRow($select) == 1){
                 // we have valid pk, update it
-                $id = $data[$this->_primary];
-                $this->update($data, $this->_db->quoteInto($this->_primary . '= ?', $data[$this->_primary]));
+                $id = $data[$primary];
+                $this->update($data, $this->_db->quoteInto($primary . '= ?', $data[$primary]));
                 return $id;
             } else {
                 // we don't have a valid pk, insert it
-                $data[$this->_primary] = NULL;
+                $data[$primary] = NULL;
                 return $this->insert($data);
             }
         } else {
             // no primary provided, do a regular insert
-            $data[$this->_primary] = NULL;
+            $data[$primary] = NULL;
             return $this->insert($data);
         }
     }
@@ -87,7 +88,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      */
     public function update($data, $where){
         $data = $this->_filter($data);
-        $where = $this->_where($where);
+        $where = $this->_normalizeWhere($where);
         
         return parent::update($data, $where);
     }
@@ -100,8 +101,21 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @return int
      */
     public function delete($where){
-        $where = $this->_where($where);
+        $where = $this->_normalizeWhere($where);
         return parent::delete($where);
+    }
+    
+    /**
+     * Find a casting by slug
+     *
+     * @param string $slug 
+     * @return App_Table_Casting
+     */
+    public function findBySlug($slug){
+        $select = $this->select();
+        $select->where('slug = ?', $slug);
+        
+        return parent::fetchRow($select);
     }
     
     /**
@@ -113,7 +127,11 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      */
     public function deleteById($id){
         if ($this->canBeDeleted($id)) {
-            $this->delete($this->_db->quoteInto($this->_primary . ' = ?', $id));
+            if(is_array($this->_primary)){
+                return $this->delete($this->_db->quoteInto($this->_primary[1] . ' = ?', $id));
+            }else{
+                return $this->delete($this->_db->quoteInto($this->_primary . ' = ?', $id));
+            }
         } else {
             throw new Zend_Exception('This item cannot be deleted. Please check the dependencies first.');
         }
@@ -147,20 +165,23 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @access protected
      * @return string
      */
-    protected function _where($where){
+    protected function _normalizeWhere($where){
         if (is_numeric($where)) {
             $where = $this->_db->quoteInto($this->_primary . ' = ?', $where);
         } else {
             if (is_array($where)) {
                 $parts = array();
                 foreach ($where as $key => $value) {
-                    $part = $this->_db->quoteInto(
-                        $this->_db->quoteIdentifier($key) . ' = ?', 
-                        $value
-                    ); 
-                    $parts []= $part;
+                    if(is_numeric($key)){
+                        $parts[] = $value;
+                    }else{
+                        $part = $this->_db->quoteInto(
+                            $this->_db->quoteIdentifier($key) . ' = ?', 
+                            $value
+                        ); 
+                        $parts[] = $part;
+                    }
                 }
-                
                 $where = implode(' AND ', $parts);
             }
         }
@@ -187,10 +208,10 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         
         $select = $this->_getSelect($force);
         
-        $column = $this->_extractTableAlias($select) . '.' . $this->_primary;
+        $column = $this->_extractTableAlias($select) . '.' . $this->_primary[1];
         $select->where($column . ' = ?', $id);
         
-        return $this->_db->fetchRow($select);
+        return $this->fetchRow($select);
     }
     
     /**
@@ -231,14 +252,14 @@ abstract class App_Model extends Zend_Db_Table_Abstract
                 if (is_array($colval)) {
                     $parts = array();
                     foreach($colval as $val) {
-                        $parts []= $this->_db->quote($val);
+                        $parts[] = $this->_db->quote($val);
                     }
-                    $queryParts []= $this->_db->quoteIdentifier($colname) . ' IN (' . implode(',', $parts) . ')';
+                    $queryParts[] = $this->_db->quoteIdentifier($colname) . ' IN (' . implode(',', $parts) . ')';
                 } else {
                     if ($colval instanceof Zend_Db_Expr) {
-                        $queryParts []= $this->_db->quoteIdentifier($colname) . ' = ' . $colval;
+                        $queryParts[] = $this->_db->quoteIdentifier($colname) . ' = ' . $colval;
                     } else {
-                        $queryParts []= $this->_db->quoteIdentifier($colname) . ' = ' . $this->_db->quote($value);
+                        $queryParts[] = $this->_db->quoteIdentifier($colname) . ' = ' . $this->_db->quote($value);
                     }
                 }
             }
@@ -272,7 +293,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         $select->reset(Zend_Db_Table::COLUMNS);
         $select->columns(array('COUNT(*)'));
         
-        return $this->_db->fetchOne($select);
+        return $this->fetchOne($select);
     }
     
     /**
@@ -299,7 +320,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         
         $alias = $this->_extractTableAlias($select);
         $select->columns(array(
-            $alias . '.' . $this->_primary, 
+            $alias . '.' . $this->_primary[1], 
             $alias . '.' . $this->_displayColumn
         ));
         
@@ -341,7 +362,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @return Zend_Db_Select
      */
     protected function _select(){
-        $select = new Zend_Db_Select($this->_db);
+        $select = $this->select();
         $select->from($this->_name);
         
         return $select;
@@ -358,7 +379,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      */
     protected final function _getSelect($force = FALSE){
         if ($force) {
-            $select = new Zend_Db_Select($this->_db);
+            $select = $this->select();
             $select->from($this->_name);
             
             return $select;
@@ -383,7 +404,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         }
         
         if (!$paginate) {
-            return $this->_db->fetchAll($select);
+            return $this->fetchAll($select);
         }
         
         $paginator = Zend_Paginator::factory($select);
@@ -401,10 +422,10 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @access protected
      * @return string
      */
-    protected function _extractTableAlias(Zend_Db_Select $select){
+    protected function _extractTableAlias($select){
         $parts = $select->getPart('from');
-        foreach ($parts as $alias => $part) {
-            if ($part['tableName'] == $this->_name) {
+        foreach($parts as $alias => $part){
+            if($part['tableName'] == $this->_name) {
                 return $alias;
             }
         }

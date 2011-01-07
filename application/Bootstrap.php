@@ -60,7 +60,7 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @return void     
      */
     protected function _initEnvironment() {
-        $file = APPLICATION_PATH . '/config/environment.php';
+        $file = APPLICATION_PATH . '/configs/environment.php';
         if (!is_readable($file)) {
             throw new Zend_Exception('Cannot find the environment.php file!');
         }
@@ -77,14 +77,14 @@ class Bootstrap extends App_Bootstrap_Abstract {
     
     /**
      * Bootstraps the application's configuration by reading the content of the 
-     * config/app.ini file, interpret it and saving the content in the Zend_Registry under 
+     * configs/application.ini file, interpret it and saving the content in the Zend_Registry under 
      * the 'config' key
      * 
      * @access protected
      * @return void     
      */
     protected function _initConfig() {
-        $configuration = new Zend_Config_Ini(APPLICATION_PATH . '/config/app.ini', APPLICATION_ENV);
+        $configuration = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', APPLICATION_ENV);
         Zend_Registry::set('config', $configuration);
     }
     
@@ -197,6 +197,7 @@ class Bootstrap extends App_Bootstrap_Abstract {
         
         $viewRenderer->view->addHelperPath('App/View/Helper', 'App_View_Helper');
         $viewRenderer->view->addHelperPath('App/Frontend/View/Helper', 'App_Frontend_View_Helper');
+        $viewRenderer->view->addHelperPath('App/Backoffice/View/Helper', 'App_Backoffice_View_Helper');
     }
     
     /**
@@ -366,6 +367,71 @@ class Bootstrap extends App_Bootstrap_Abstract {
         $this->bootstrap('ModulePaths');
         
         App_FlagFlippers_Manager::load();
+    }
+    
+    /**
+     * Inits the Amazon CloudFront Invalidator
+     *
+     * @return void
+     */
+    protected function _initCloudFront(){
+        $config = Zend_Registry::get('config');
+        
+        if($config->amazon->cloudfront->enabled){
+            $cloudFrontConfig = array(
+                'accessKey' => $config->amazon->aws_access_key,
+                'privateKey' => $config->amazon->aws_private_key,
+                'distributionId' => $config->amazon->cloudfront->distribution_id,
+            );
+            
+            $cloudFront = new App_Amazon_CloudFront($cloudFrontConfig);
+            Zend_Registry::set('CloudFront', $cloudFront);
+        }
+    }
+    
+    /**
+     * Initialize the S3 Storage Engine
+     *
+     * @return void
+     */
+    protected function _initS3Storage(){
+        $config = Zend_Registry::get('config');
+        
+        if($config->amazon->s3->enabled){
+            $storage = Zend_Cloud_StorageService_Factory::getAdapter(array(
+                Zend_Cloud_StorageService_Factory::STORAGE_ADAPTER_KEY => 'Zend_Cloud_StorageService_Adapter_S3',
+                Zend_Cloud_StorageService_Adapter_S3::AWS_ACCESS_KEY => $config->amazon->aws_access_key,
+                Zend_Cloud_StorageService_Adapter_S3::AWS_SECRET_KEY => $config->amazon->aws_private_key,
+            ));
+            
+            Zend_Registry::set('S3StorageEngine', $storage);
+        }
+    }
+    
+    /**
+     * Inits the Amazon SNS Topics
+     *
+     * @return void
+     */
+    protected function _initSNSTopics(){
+        $config = Zend_Registry::get('config');
+        
+        if($config->amazon->sns->enabled){
+            $snsConfig = array(
+                'accessKey' => $config->amazon->aws_access_key,
+                'privateKey' => $config->amazon->aws_private_key,
+                'host' => $config->amazon->sns->host,
+            );
+            
+            $topics = $config->amazon->sns->topics;
+            
+            foreach($topics as $topic){
+                $snsConfig['topicArn'] = $topic->arn;
+                
+                $sns = new App_Amazon_SNS_Topic($snsConfig);
+                Zend_Registry::set($topic->key, $sns);
+            }
+        }
     }
     
     /**

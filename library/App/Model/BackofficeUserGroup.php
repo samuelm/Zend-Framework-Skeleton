@@ -43,7 +43,7 @@ class BackofficeUserGroup extends App_Model
     protected $_referenceMap = array(
         'User' => array(
             'columns' => 'user_id',
-            'refTableClass' => 'User',
+            'refTableClass' => 'BackofficeUser',
             'refColumns' => 'id'
         ),
         'Group' => array(
@@ -106,7 +106,7 @@ class BackofficeUserGroup extends App_Model
      * @access public
      * @return void
      */
-    public function saveForUser(array $data, $userId){
+    public function saveForUser($data, $userId){
         $this->deleteByUserId($userId);
         
         if (!empty($data)) {
@@ -116,12 +116,6 @@ class BackofficeUserGroup extends App_Model
                     'user_id' => $userId
                 ));
             }
-        } else {
-            // defaults to member
-            $this->save(array(
-                'group_id' => 2,
-                'user_id' => $userId
-            ));
         }
     }
     

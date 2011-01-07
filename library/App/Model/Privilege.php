@@ -55,12 +55,17 @@ class Privilege extends App_Model
      * @return void
      */
     public function findByNameAndFlagId($name, $resourceId){
-        $select = new Zend_Db_Select($this->_db);
+        $select = $this->_select();
         $select->from($this->_name);
         $select->where('name = ?', $name);
         $select->where('flag_id = ?', $resourceId);
         
-        return $this->_db->fetchRow($select);
+        $privilege = $this->fetchRow($select);
+        
+        $privilege->flag = $privilege->findParentRow('Flag');
+        $privilege->flagName = $privilege->flag->name;
+        
+        return $privilege;
     }
     
     /**
@@ -72,11 +77,61 @@ class Privilege extends App_Model
      * @return void
      */
     public function findByFlagId($resourceId){
-        $select = new Zend_Db_Select($this->_db);
+        $select = $this->_select();
         $select->from($this->_name);
         $select->where('flag_id = ?', $resourceId);
+        $select->order('name ASC');
         
-        return $this->_db->fetchAll($select);
+        $privileges = $this->fetchAll($select);
+        
+        foreach($privileges as $privilege){
+            $privilege->flag = $privilege->findParentRow('Flag');
+            $privilege->flagName = $privilege->flag->name;
+        }
+        
+        return $privileges;
+    }
+    
+    /**
+     * Overrides getAll() in App_Model
+     * 
+     * @param int $page 
+     * @access public
+     * @return Zend_Paginator
+     */
+    public function findAll($page = 1){
+        $paginator = $this->fetchAll();
+        $privileges = array();
+        
+        foreach($paginator as $privilege){
+            $privilege->flag = $privilege->findParentRow('Flag');
+            $privilege->flagName = $privilege->flag->name;
+            
+            $privileges[] = $privilege;
+        }
+        
+        $paginator = Zend_Paginator::factory($privileges);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(Zend_Registry::get('config')->paginator->items_per_page);
+        
+        return $paginator;
+    }
+    
+    /**
+     * Overrides findById() in App_Model
+     * 
+     * @param int $userId 
+     * @access public
+     * @return array
+     */
+    public function findById($privilegeId){
+        $privilege = parent::findById($privilegeId);
+        if(!empty($privilege)){
+            $privilege->flag = $privilege->findParentRow('Flag');
+            $privilege->flagName = $privilege->flag->name;
+        }
+        
+        return $privilege;
     }
     
     /**
@@ -93,23 +148,5 @@ class Privilege extends App_Model
         $flipperModel->deleteByPrivilegeId($privilegeId);
         
         return TRUE;
-    }
-    
-    /**
-     * Overrides App_Model::getQuery()
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function _select(){
-        $select = new Zend_Db_Select($this->_db);
-        
-        $select->from(array('p' => $this->_name));
-        $select->joinLeft(array('f' => 'flags'), 'p.flag_id = f.id');
-        $select->order(array('p.flag_id', 'p.name'));
-        $select->reset(Zend_Db_Table::COLUMNS);
-        $select->columns(array('p.*', 'f.name AS flag_name'));
-        
-        return $select;
     }
 }

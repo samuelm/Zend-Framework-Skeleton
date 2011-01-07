@@ -101,6 +101,7 @@ class GroupForm extends App_Backoffice_Form
             unset($options[$data['id']]);
             $element->setMultiOptions($options);
         }
+        
         parent::populate($data);
     }
     

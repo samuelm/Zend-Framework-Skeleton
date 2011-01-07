@@ -2,12 +2,12 @@
 /**
  * Model that manages the users within the application
  *
- * @category App
- * @package App_Model
+ * @category backoffice
+ * @package backoffice_models
  * @copyright Company
  */
 
-class BackofficeUser extends App_Model
+class BackofficeUser extends BaseUser
 {
     /**
      * Column for the primary key
@@ -32,80 +32,6 @@ class BackofficeUser extends App_Model
      * @access protected
      */
     protected $_rowClass = 'App_Table_BackofficeUser';
-    
-    /**
-     * Logs an user in the application based on his
-     * username and email
-     * 
-     * @param string $username
-     * @param string $password 
-     * @access public
-     * @return void
-     */
-    public function login($username, $password){
-        // adapter cfg
-        $adapter = new Zend_Auth_Adapter_DbTable($this->_db);
-        $adapter->setTableName($this->_name);
-        $adapter->setIdentityColumn('username');
-        $adapter->setCredentialColumn('password');
-        
-        // checking credentials
-        $adapter->setIdentity($username);
-        $adapter->setCredential(BackofficeUser::hashPassword($password));
-        $result = $adapter->authenticate();
-        
-        if($result->isValid()) {
-            // clear the existing data
-            $auth = Zend_Auth::getInstance();
-            $auth->clearIdentity();
-            
-            // get the user row
-            $user = $adapter->getResultRowObject(NULL, 'password');
-            
-            // check if the password has expired
-            $auth->getStorage()->write($user);
-            
-            $this->update(
-                array(
-                    'last_login' => new Zend_Db_Expr('NOW()')
-                ), 
-                $this->_db->quoteInto('id = ?', $user->id)
-            );
-            
-            return TRUE;
-        }else{
-            return FALSE;
-        }
-    }
-    
-    /**
-     * Changes the current user's password
-     * 
-     * @param string $password 
-     * @access public
-     * @return void
-     */
-    public function changePassword($password){
-        if (!Zend_Auth::getInstance()->hasIdentity()) {
-            throw new Zend_Exception('You must have one authenticated user in the application in order to be able to call this method');
-        }
-        
-        $user = Zend_Auth::getInstance()->getIdentity();
-        
-        $password = BackofficeUser::hashPassword($password);
-        
-        $passwordLogModel = new PasswordLog();
-        $passwordLogModel->savePassword($password);
-        
-        $this->update(
-            array(
-                'password' => $password,
-                'last_password_update' => new Zend_Db_Expr('NOW()'),
-                'password_valid' => 1
-            ),
-            $this->_db->quoteInto('id = ?', $user->id)
-        );
-    }
     
     /**
      * Updates the user's profile. 
@@ -158,19 +84,6 @@ class BackofficeUser extends App_Model
     }
     
     /**
-     * Hashes a password using the salt in the app.ini
-     *
-     * @param string $password 
-     * @static
-     * @access public
-     * @return string
-     */
-    public static function hashPassword($password){
-        $config = Zend_Registry::get('config');
-        return sha1($config->backoffice->security->passwordsalt . $password);
-    }
-    
-    /**
      * Overrides getAll() in App_Model
      * 
      * @param int $page 
@@ -179,21 +92,20 @@ class BackofficeUser extends App_Model
      */
     public function findAll($page = 1){
         $paginator = parent::findAll($page);
-        $items = array();
+        $users = array();
         
-        $userGroupModel = new BackofficeUserGroup();
-        
-        foreach ($paginator as $item) {
-            $item['groups'] = array();
+        foreach($paginator as $user){
+            $user->groups = $user->findManyToManyRowset('Group', 'BackofficeUserGroup');
             
-            foreach($userGroupModel->findByUserId($item['id'], TRUE) as $group) {
-                $item['groups'][$group['id']] = $group['name'];
+            foreach($user->groups as $group){
+                $user->groupNames[] = $group->name;
+                $user->groupIds[] = $group->id;
             }
             
-            $items[] = $item;
+            $users[] = $user;
         }
         
-        return Zend_Paginator::factory($items);
+        return Zend_Paginator::factory($users);
     }
     
     /**
@@ -204,18 +116,17 @@ class BackofficeUser extends App_Model
      * @return array
      */
     public function findById($userId){
-        $row = parent::findById($userId);
-        if(!empty($row)){
-            $row['groups'] = array();
+        $user = parent::findById($userId);
+        if(!empty($user)){
+            $user->groups = $user->findManyToManyRowset('Group', 'BackofficeUserGroup');
             
-            $userGroupModel = new BackofficeUserGroup();
-            
-            foreach($userGroupModel->findByUserId($userId, TRUE) as $group){
-                $row['groups'][$group['id']] = $group['name'];
+            foreach($user->groups as $group){
+                $user->groupNames[] = $group->name;
+                $user->groupIds[] = $group->id;
             }
         }
         
-        return $row;
+        return $user;
     }
     
     /**
@@ -245,5 +156,31 @@ class BackofficeUser extends App_Model
         }
         
         return parent::delete($where);
+    }
+    
+    /**
+     * Changes the current user's password
+     * 
+     * @param string $password 
+     * @access public
+     * @return void
+     */
+    public function changePassword($password){
+        if (!Zend_Auth::getInstance()->hasIdentity()) {
+            throw new Zend_Exception('You must have one authenticated user in the application in order to be able to call this method');
+        }
+        
+        $user = Zend_Auth::getInstance()->getIdentity();
+        
+        $password = BackofficeUser::hashPassword($password);
+        
+        $this->update(
+            array(
+                'password' => $password,
+                'last_password_update' => new Zend_Db_Expr('NOW()'),
+                'password_valid' => 1
+            ),
+            $this->_db->quoteInto('id = ?', $user->id)
+        );
     }
 }

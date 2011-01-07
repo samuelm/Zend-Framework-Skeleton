@@ -40,7 +40,7 @@ abstract class App_Backoffice_Form extends App_Form
                 'validators' => array(
                     'NotEmpty',
                 ),
-                'salt' => $config->backoffice->security->csrfsalt . get_class($this),
+                'salt' => $config->security->csrfsalt . get_class($this),
             )
         );
         $this->addElement($csrfHash);
@@ -57,23 +57,24 @@ abstract class App_Backoffice_Form extends App_Form
         foreach($this->getElements() as $element) {
             $this->_replaceLabel($element);
             
-            if($element instanceof Zend_Form_Element_Hidden || $element instanceof Zend_Form_Element_Hash) {
-                $this->_addHiddenClass($element);
-            } else {
-                if ($element instanceof Zend_Form_Element_Checkbox) {
+            switch(TRUE){
+                case $element instanceof Zend_Form_Element_Hidden:
+                case $element instanceof Zend_Form_Element_Hash:
+                    $this->_addHiddenClass($element);
+                    break;
+                case $element instanceof Zend_Form_Element_Checkbox:
                     $this->_appendLabel($element);
-                } else {
-                    if ($element instanceof Zend_Form_Element_MultiCheckbox) {
-                        $element->getDecorator('Label')
-                                ->setOption('tagOptions', array('class' => 'checkboxGroup'));
-                        $element->getDecorator('HtmlTag')
-                                ->setOption('class', 'checkboxGroup');
-                    }
-                }
+                    break;
+                case $element instanceof Zend_Form_Element_MultiCheckbox:
+                    $element->getDecorator('Label')->setOption('tagOptions', array('class' => 'checkboxGroup'));
+                    $element->getDecorator('HtmlTag')->setOption('class', 'checkboxGroup');
+                    break;
             }
         }
         
         $this->_cancelLink();
+        
+        $this->getDecorator('HtmlTag')->setOption('class', 'zend_form clearfix');
         
         if (NULL === $this->getAttrib('id')) {
             $controllerName = Zend_Registry::get('controllerName');
@@ -95,7 +96,7 @@ abstract class App_Backoffice_Form extends App_Form
     protected function _addHiddenClass($element){
         $label = $element->getLabel();
         if (empty($label)) {
-            $element->setLabel('&nbsp;');
+            $element->setLabel('');
         }
         
         $element->getDecorator('HtmlTag')
@@ -114,12 +115,8 @@ abstract class App_Backoffice_Form extends App_Form
      * @return void
      */
     protected function _appendLabel($element){
-        $element->getDecorator('HtmlTag')
-                ->setOption('class', 'radiocheck');
-        
         $element->getDecorator('Label')
-                ->setOption('placement', Zend_Form_Decorator_Abstract::APPEND)
-                ->setOption('tagOptions', array('class' => 'radiocheck'));
+                ->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
     }
     
     /**

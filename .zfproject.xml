@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<projectProfile type="default" version="1.11">
+  <projectDirectory>
+    <projectProfileFile filesystemName=".zfproject.xml"/>
+    <applicationDirectory classNamePrefix="App_">
+      <apisDirectory enabled="false"/>
+      <configsDirectory>
+        <applicationConfigFile type="ini"/>
+      </configsDirectory>
+    </applicationDirectory>
+  </projectDirectory>
+</projectProfile>

@@ -56,6 +56,8 @@ class GroupsController extends App_Backoffice_Controller
                     )
                 );
                 
+                App_FlagFlippers_Manager::save();
+                
                 $this->_redirect('/groups/');
             }
         }
@@ -84,6 +86,8 @@ class GroupsController extends App_Backoffice_Controller
                     )
                 );
                 
+                App_FlagFlippers_Manager::save();
+                
                 $this->_redirect('/groups/');
             }
         }else{
@@ -111,7 +115,7 @@ class GroupsController extends App_Backoffice_Controller
                 $this->_redirect('/groups/');
             }
             
-            $form->populate($row);
+            $form->populate($row->toArray());
             $this->view->item = $row;
         }
         
@@ -141,6 +145,8 @@ class GroupsController extends App_Backoffice_Controller
                     )
                 );
                 
+                App_FlagFlippers_Manager::save();
+                
                 $this->_redirect('/groups/');
             }
         }else{
@@ -156,7 +162,7 @@ class GroupsController extends App_Backoffice_Controller
                 $this->_redirect('/groups/');
             }
             
-            $form->populate($row);
+            $form->populate($row->toArray());
             $this->view->item = $row;
         }
         
@@ -177,7 +183,7 @@ class GroupsController extends App_Backoffice_Controller
         $fliperModel = new Flipper();
         $groupModel = new Group();
         
-        if ($this->getRequest()->isPost()) {
+        if($this->getRequest()->isPost()){
             if($form->isValid($this->getRequest()->getPost())) {
                 $fliperModel->savePermissions($form->getValues());
                 $this->_helper->FlashMessenger(
@@ -185,6 +191,8 @@ class GroupsController extends App_Backoffice_Controller
                         'msg-success' => sprintf('Permissions for group %s were successfully updated.', $group['name']),
                     )
                 );
+                
+                App_FlagFlippers_Manager::save();
                 
                 $this->_redirect('/groups/');
             }
@@ -202,7 +210,6 @@ class GroupsController extends App_Backoffice_Controller
             
             $group = $groupModel->findById($id);
             $flipper = $fliperModel->findByGroupId($id);
-            $flipper += array('group_id' => $id);
             
             if (empty($group)) {
                 $this->_helper->FlashMessenger(
@@ -214,7 +221,7 @@ class GroupsController extends App_Backoffice_Controller
                 $this->_redirect('/groups/');
             }
             
-            $form->populate($flipper);
+            $form->populate($flipper->toArray(), $id);
             $this->view->item = $group;
         }
         

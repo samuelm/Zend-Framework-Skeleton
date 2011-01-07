@@ -20,7 +20,7 @@ class App_Inflector
      */
     public static function convertControllerName($string){
         $string = substr($string, 0, -10);
-        return $this->camelCaseToDash($string);
+        return self::camelCaseToDash($string);
     }
     
     /**

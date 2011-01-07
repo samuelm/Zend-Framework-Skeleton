@@ -24,7 +24,7 @@ class Frontend_Bootstrap extends App_Bootstrap_Abstract
      * @return void
      */
     protected function _initRouter(){
-        $routes = new Zend_Config_Xml(APPLICATION_PATH . '/config/frontend_routes.xml');
+        $routes = new Zend_Config_Xml(APPLICATION_PATH . '/configs/frontend_routes.xml');
         $router = new Zend_Controller_Router_Rewrite();
         $router->addConfig($routes);
         

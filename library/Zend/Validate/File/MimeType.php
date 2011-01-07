@@ -16,7 +16,7 @@
  * @package   Zend_Validate
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version   $Id: MimeType.php 21472 2010-03-11 22:16:55Z thomas $
+ * @version   $Id: MimeType.php 22832 2010-08-12 18:02:41Z thomas $
  */
 
 /**
@@ -48,7 +48,7 @@ class Zend_Validate_File_MimeType extends Zend_Validate_Abstract
     protected $_messageTemplates = array(
         self::FALSE_TYPE   => "File '%value%' has a false mimetype of '%type%'",
         self::NOT_DETECTED => "The mimetype of file '%value%' could not be detected",
-        self::NOT_READABLE => "File '%value%' can not be read",
+        self::NOT_READABLE => "File '%value%' is not readable or does not exist",
     );
 
     /**
@@ -191,13 +191,13 @@ class Zend_Validate_File_MimeType extends Zend_Validate_Abstract
             $this->_magicfile = null;
             require_once 'Zend/Validate/Exception.php';
             throw new Zend_Validate_Exception('Magicfile can not be set. There is no finfo extension installed');
-        } else if (!is_readable($file)) {
+        } else if (!is_file($file) || !is_readable($file)) {
             require_once 'Zend/Validate/Exception.php';
             throw new Zend_Validate_Exception('The given magicfile can not be read');
         } else {
             $const = defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME;
             $this->_finfo = @finfo_open($const, $file);
-            if ($this->_finfo === false) {
+            if (empty($this->_finfo)) {
                 $this->_finfo = null;
                 require_once 'Zend/Validate/Exception.php';
                 throw new Zend_Validate_Exception('The given magicfile is not accepted by finfo');
@@ -332,19 +332,18 @@ class Zend_Validate_File_MimeType extends Zend_Validate_Abstract
         $mimefile = $this->getMagicFile();
         if (class_exists('finfo', false)) {
             $const = defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME;
-            if (!empty($mimefile) && !empty($this->_finfo)) {
+            if (!empty($mimefile) && empty($this->_finfo)) {
                 $this->_finfo = @finfo_open($const, $mimefile);
             }
 
-            if ($this->_finfo === false) {
+            if (empty($this->_finfo)) {
                 $this->_finfo = @finfo_open($const);
             }
 
-            if ($this->_finfo !== false) {
+            $this->_type = null;
+            if (!empty($this->_finfo)) {
                 $this->_type = finfo_file($this->_finfo, $value);
             }
-
-            unset($this->_finfo);
         }
 
         if (empty($this->_type) &&

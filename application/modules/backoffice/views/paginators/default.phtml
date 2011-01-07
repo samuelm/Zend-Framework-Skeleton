@@ -13,10 +13,10 @@
         <li>
         <!-- Previous page link -->
         <?php if (isset($this->previous)): ?>
-            <a class="text" href="<?php echo $this->url(array('page' => $this->previous)); ?>"> &larr; Previous</a>
-        <?php else: ?>
-            <span class="disabled"> &larr; Previous</span>
-        <?php endif; ?>
+            <a class="text" href="<?php echo $this->url(array('page' => $this->previous)); ?>"> ← Previous</a>
+        <?php /* else: ?>
+            <span class="disabled"> ← Previous</span>
+        <?php */ endif; ?>
         </li>
         
         <!-- Numbered page links -->
@@ -33,10 +33,10 @@
         <!-- Next page link -->
         <li>
         <?php if (isset($this->next)): ?>
-            <a class="text" href="<?php echo $this->url(array('page' => $this->next)); ?>">Next &rarr;</a>
-        <?php else: ?>
-            <span class="disabled">Next &rarr;</span>
-        <?php endif; ?>
+            <a class="text" href="<?php echo $this->url(array('page' => $this->next)); ?>">Next →</a>
+        <?php /* else: ?>
+            <span class="disabled">Next →</span>
+        <?php */ endif; ?>
     </li>
     </ul>
 <?php endif; ?>

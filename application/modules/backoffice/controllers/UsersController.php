@@ -56,6 +56,8 @@ class UsersController extends App_Backoffice_Controller
                     )
                 );
                 
+                App_FlagFlippers_Manager::save();
+                
                 $this->_redirect('/users/');
             }
         }
@@ -84,6 +86,8 @@ class UsersController extends App_Backoffice_Controller
                         'msg-success' => 'The user was successfully updated',
                     )
                 );
+                
+                App_FlagFlippers_Manager::save();
                 
                 $this->_redirect('/users/');
             }
@@ -122,8 +126,8 @@ class UsersController extends App_Backoffice_Controller
                 $this->_redirect('/users/');
             }
             
-            $data = $row;
-            $data['groups'] = array_keys($data['groups']);
+            $data = $row->toArray();
+            $data['groups'] = $row->groupIds;
             $form->populate($data);
             
             $this->view->item = $row;
@@ -192,6 +196,8 @@ class UsersController extends App_Backoffice_Controller
                     )
                 );
                 
+                App_FlagFlippers_Manager::save();
+                
                 $this->_redirect('/users/');
             }
         }else{
@@ -230,7 +236,7 @@ class UsersController extends App_Backoffice_Controller
             }
             
             $this->view->item = $row;
-            $form->populate($row);
+            $form->populate($row->toArray());
         }
         
         $this->view->form = $form;

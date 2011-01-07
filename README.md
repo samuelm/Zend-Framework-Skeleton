@@ -35,6 +35,10 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * Basic BO structure with two levels of navigation
 * BO menu generated automatically based on an array and filtered through the Flag and flippers configured
 * All the tables needed dumped in a sql file under /docs
+* Akrabat db migration system implemented
+* Amazon CloudFront Invalidator implemented
+* Amazon SNS publish feature implemented
+* Amazon S3 integrated
 
 Credentials to access the BO
 ============================
@@ -120,7 +124,19 @@ Installation
     `On *nix: echo 'backoffice.zfs.local' >> /etc/hosts`
 
 6. Duplicate the file application/config/environment.example.php and rename the copy to environment.php
-    
+
 7. Import the db scheme located at /docs/sql/db.sql
-    
+
+8. Create the storage directory for the ZF Tool
+
+    `zf --setup storage-directory`
+
+9. Setup the config file for ZF Tool
+
+     `zf --setup config-file`
+
+10. Modify the ~/.zf.ini file created and replace the content with the following
+
+    `basicloader.classes.0 = "Akrabat_Tool_DatabaseSchemaProvider"`
+
 That's it you can start now using the skeleton to build the next amazing app!

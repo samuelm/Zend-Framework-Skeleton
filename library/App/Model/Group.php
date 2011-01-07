@@ -64,7 +64,7 @@ class Group extends App_Model
      */
     public function fetchAllThreaded(){
         $select = $this->_select();
-        return $this->_db->fetchAll($select);
+        return $this->fetchAll($select);
     }
     
     /**
@@ -124,7 +124,9 @@ class Group extends App_Model
     public function findPairs(){
         $pairs = parent::findPairs();
         
-        $pairs = array('2' => 'member') + $pairs;
+        //Unset the guest group
+        unset($pairs[array_search('guests', $pairs)]);
+        
         return $pairs;
     }
     
@@ -148,8 +150,7 @@ class Group extends App_Model
      * @return void
      */
     protected function _select(){
-        $select = new Zend_Db_Select($this->_db);
-        
+        $select = $this->select();
         $select->from(array('g' => $this->_name));
         $select->joinLeft(array('t' => $this->_name), 'g.parent_id = t.id');
         $select->order('g.parent_id ASC');

@@ -157,7 +157,7 @@ class UserForm extends App_Backoffice_Form
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setOptions(
             array(
-                'label'      => 'Add user',
+                'label'      => 'Save user',
                 'required'   => true,
                 'order'      => 100,
             )

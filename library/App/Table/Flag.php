@@ -10,4 +10,10 @@
 
 class App_Table_Flag extends App_Table
 {
+    /**
+     * Store the privileges
+     *
+     * @var array
+     */
+    public $privileges;
 }

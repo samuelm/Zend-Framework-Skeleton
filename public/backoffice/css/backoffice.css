@@ -631,7 +631,6 @@ legend{
     font-weight: bold;
     border-bottom: 4px solid #999;
     display: block;
-    width: 50%;
     margin-bottom: 1em;
 }
 form dt{
@@ -1155,4 +1154,49 @@ body.groupspermissions fieldset dt{
 .emptyMessage{
     text-align: center;
     font-weight: bold;
+}
+
+form#groups-flippers dt + dd fieldset{
+    margin-bottom: 20px;
+}
+form#groups-flippers dt,
+form#groups-flippers dd{
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+form#groups-flippers dt{
+    line-height:19px;
+}
+form#groups-flippers dd{
+    float: left;
+    clear: left;
+}
+form#groups-flippers dd input{
+    margin-right: 4px;
+}
+form#groups-flippers dd#submit-element{
+    float: none;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+.clearfix {
+    display: inline-block;
+}
+html[xmlns] .clearfix {
+    display: block;
+}
+* html .clearfix {
+    height: 1%;
+}
+
+.emoticon-easter-egg{
+    text-decoration:none;
+    color:#4183C4;
 }
