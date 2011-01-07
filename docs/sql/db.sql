@@ -210,8 +210,8 @@ VALUES
 	(NULL,'toogle-dev','8','Change the active status of a flag on development'),
 	(NULL,'toogleprod','8','Change the active status of a flag on production'),
 	(NULL,'toogledev','8','Change the active status of a flag on development'),
-	(NULL,'zfdebug','30','Enable ZF Debug Toolbar'),
-	(NULL,'zfdebug','31','Enable ZF Debug Toolbar');
+	(NULL,'zfdebug','9','Enable ZF Debug Toolbar'),
+	(NULL,'zfdebug','10','Enable ZF Debug Toolbar');
 
 /*!40000 ALTER TABLE `privileges` ENABLE KEYS */;
 UNLOCK TABLES;
