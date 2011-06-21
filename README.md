@@ -24,21 +24,34 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * Zend_Locale configured to detect the locale and degrades gracefully
 * App configured to use three environments (dev, staging, production)
 * Zend_Registry up and running
-* All the handy data stored in the Registry and constants like environment, some paths (app path, root path), config object...
+* All the handy data stored in the Registry and constants like environment, some paths (app path, root path)...
 * View Helper to translate using the following method $this->t() instead of $this->translate() (much shorter)
 * Flag and Flippers concept of flickr implemented through ACL
 * Flag and Flippers configurable via BO (Still some stuff in development)
 * CLI tool to generate basic ACL rules for controllers and actions
 * Basic Inflector
-* Strong password rules (The new password cannot be any of the last 4 used)
 * Three custom validators to handle passwords
 * Basic BO structure with two levels of navigation
 * BO menu generated automatically based on an array and filtered through the Flag and flippers configured
-* All the tables needed dumped in a sql file under /docs
+* All the tables needed dumped in migration files
 * Akrabat db migration system implemented
 * Amazon CloudFront Invalidator implemented
 * Amazon SNS publish feature implemented
 * Amazon S3 integrated
+* Amazon Simple Email Service integrate through a custom mail transport
+* App_Logger attached to Amazon SES to receive notifications of the errors (based on zend_log and it's logs levels)
+* Implemented a dependency injector container and moved a lot of objects there
+* Integrated gearmand and some workers to do jobs asynchronously
+* Analytics worker to send info to Amazon Simple DB
+* Upload worker to upload files to Amazon S3
+* Remove cdn worker to invalidate files on Amazon CloudFront
+* Send email worker to send the emails through Amazon Simple Email Service
+* Chain-of-resonsability pattern implemented in the controllers and 3 commands available (publish to facebook, twitter or send email)
+* CDN View helper to fetch the files directly from the cdn (supports multiple domains to speed up the page load time)
+* Bitly Short Url service integrated
+* Custom logic to handle emails and their templates
+* Install script
+
 
 Credentials to access the BO
 ============================
@@ -48,25 +61,13 @@ Admin Group
 Username: john.doe  
 Password: lorem
 
-Member Group
-------------
-Username: member.test  
-Password: lorem
-
 Installation
 ============
 
 0. You have to have a memcached server and the memcache php extension installed
 1. Get a copy of the files in your machine
-2. Create two folders called cache and logs in the root of the project and subfolders in logs one for each module
-    
-    `On *nix: mkdir -p cache logs/backoffice logs/frontend/missing_translations`
-    
-3. Give read/write access to those folders
-    
-    `On *nix: chmod -R 777 cache logs`
-    
-4. Create the virtual hosts (one per module)
+2. Run the install script located at ./scripts
+3. Create the virtual hosts (one per module)
     
     <VirtualHost *:80>
         ServerAdmin admin@example.com
@@ -122,21 +123,5 @@ Installation
 
     `On *nix: echo 'frontend.zfs.local' >> /etc/hosts`  
     `On *nix: echo 'backoffice.zfs.local' >> /etc/hosts`
-
-6. Duplicate the file application/config/environment.example.php and rename the copy to environment.php
-
-7. Import the db scheme located at /docs/sql/db.sql
-
-8. Create the storage directory for the ZF Tool
-
-    `zf --setup storage-directory`
-
-9. Setup the config file for ZF Tool
-
-     `zf --setup config-file`
-
-10. Modify the ~/.zf.ini file created and replace the content with the following
-
-    `basicloader.classes.0 = "Akrabat_Tool_DatabaseSchemaProvider"`
 
 That's it you can start now using the skeleton to build the next amazing app!
