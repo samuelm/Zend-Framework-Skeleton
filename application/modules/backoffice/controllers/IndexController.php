@@ -4,7 +4,7 @@
  *
  * @category backoffice
  * @package backoffice_controllers
- * @copyright Company
+ * @copyright company
  */
 
 class IndexController extends App_Backoffice_Controller

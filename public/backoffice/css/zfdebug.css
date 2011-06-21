@@ -7,4 +7,11 @@
 .ZFDebug_last { border: 1px solid #999; }
 .ZFDebug_panel { text-align:left; position:absolute;bottom:21px;width:600px; max-height:400px; overflow:auto; display:none; background:#E8E8E8; padding:5px; border: 1px solid #999; }
 .ZFDebug_panel .pre {font: 11px/1.4em Monaco, Lucida Console, monospace; margin:0 0 0 22px}
-#ZFDebug_exception { border:1px solid #CD0A0A;display: block; }
+#ZFDebug_exception {
+    border:1px solid #CD0A0A;
+    display: block;
+    padding: 20px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    margin: 10px;
+}

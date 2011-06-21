@@ -5,14 +5,18 @@
  * @category backoffice
  * @package backoffice_views
  * @subpackage backoffice_views_profile
- * @copyright Company
+ * @copyright company
  */
 ?>
-<div class="inner-form">
-    <?php if (isset($this->error)):?>
-        <div class="msg msg-error">
-            <p><?php echo '<strong>Login failed</strong>.<br />Please check that you wrote your Username and Password correctly.';?></p>
-        </div>
-    <?php endif;?>
-    <?php echo $this->form;?>
+<div id="login">
+    <h2>Log in</h2>
+    <div id="inner-login">
+        <?php if (isset($this->error)):?>
+            <div class="msg msg-error">
+                <p><?php echo '<strong>Upppps!</strong><br />Invalid username or password';?></p>
+            </div>
+        <?php endif;?>
+        <?php echo $this->form;?>
+    </div>
 </div>
+

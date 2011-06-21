@@ -6,7 +6,7 @@
  * @category backoffice
  * @package backoffice_cli
  * @subpackage backoffice_cli_tools
- * @copyright Company
+ * @copyright casting.net
  */
 
 require_once dirname(__FILE__) . '/../cli.php';

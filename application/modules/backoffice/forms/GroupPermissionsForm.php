@@ -4,7 +4,7 @@
  *
  * @category backoffice
  * @package backoffice_forms
- * @copyright Company
+ * @copyright company
  */
 
 class GroupPermissionsForm extends App_Backoffice_Form
@@ -27,8 +27,7 @@ class GroupPermissionsForm extends App_Backoffice_Form
         
         foreach ($flags as $flag) {
             $displayGroup = array();
-            
-            foreach($flag->privileges as $privilege){
+            foreach ($flag->privileges as $privilege) {
                 $checkbox = new Zend_Form_Element_Checkbox('flipper_' . $flag->id . '_' . $privilege->id);
                 $checkbox->setOptions(
                     array(

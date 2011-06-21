@@ -6,7 +6,7 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
 class App_View_Helper_FlashMessenger extends Zend_View_Helper_Abstract
@@ -41,9 +41,7 @@ class App_View_Helper_FlashMessenger extends Zend_View_Helper_Abstract
                 list($key, $message) = each($message);
             }
             
-            $output .= '<div id="messages"><div class="top ' . $key . '"></div>';
             $output .= sprintf($template, $key, $message);
-            $output .= '<div class="bottom ' . $key . '"></div></div>';
         }
         
         return $output;

@@ -4,7 +4,7 @@
  * the Flags in the application
  *
  * @package backoffice_models
- * @copyright Company
+ * @copyright company
  */
 
 class Flag extends App_Model
@@ -55,10 +55,6 @@ class Flag extends App_Model
         'index',
     );
     
-    public function init(){
-        $this->_db = Zend_Registry::get('dbAdapter');
-    }
-    
     /**
      * Returns an array with all resources and their associated
      * privileges
@@ -67,8 +63,7 @@ class Flag extends App_Model
      * @return array
      */
     public function getAllFlagsAndPrivileges(){
-        $select = $this->select();
-        $select->from($this->_name);
+        $select = $this->_select();
         $select->order('name ASC');
         
         $rows = $this->fetchAll($select);
@@ -97,7 +92,8 @@ class Flag extends App_Model
      * @return void
      */
     public function checkRegistered($resource, $privilege){
-        $select = new Zend_Db_Select($this->_db);
+        $select = $this->_select();
+        $select->setIntegrityCheck(FALSE);
         $select->from(array('r' => $this->_name));
         $select->join(array('p' => 'privileges'), 'r.id = p.flag_id');
         $select->where('r.name = ?', $resource);
@@ -105,9 +101,9 @@ class Flag extends App_Model
         $select->reset(Zend_Db_Table::COLUMNS);
         $select->columns(array('COUNT(r.id)'));
         
-        $count = $this->_db->fetchOne($select);
+        $row = $this->fetchRow($select);
         
-        return $count != 0;
+        return !is_null($row);
     }
     
     /**
@@ -118,8 +114,7 @@ class Flag extends App_Model
      * @return void
      */
     public function toogleFlag($id, $env){
-        $select = $this->select();
-        $select->from($this->_name);
+        $select = $this->_select();
         $select->where('id = ?', $id);
         
         $row = $this->fetchRow($select);

@@ -5,7 +5,7 @@
  * @category backoffice
  * @package backoffice
  * @subpackage backoffice_forms
- * @copyright Company
+ * @copyright company
  */
 
 class ChangePasswordForm extends App_Backoffice_Form

@@ -5,10 +5,10 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
-class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
+class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
 {
     /**
      * Human readable names for the main table's 
@@ -29,13 +29,29 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
     protected $_columnIndexes = array();
     
     /**
-     * Database datat types for the main table's columns.
+     * Database data types for the main table's columns.
      * They must be in the same order as the columnNames
      * 
      * @var array
      * @access protected
      */
     protected $_columnDataTypes = array();
+    
+    /**
+     * Array of routes to build extra links to be shown in specific columns
+     *
+     * @var array
+     * @access protected
+     */
+    protected $_columnExtraLinks = array();
+    
+    /**
+     * Array of lazy load columns
+     *
+     * @var array
+     * @access protected
+     */
+    protected $_lazyLoad = array();
     
     /**
      * Page title
@@ -137,7 +153,7 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
             'title'         => 'Edit',
             'link_class'    => 'ico',
             'img_alt'       => 'edit',
-            'img_url'       => '/images/fff/pencil.png',
+            'img_url'       => '/images/icons/fff/pencil.png',
             'parameter'     => TRUE,
         ),
         'delete'    =>  array(
@@ -145,7 +161,7 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
             'title'         => 'Delete',
             'link_class'    => 'ico',
             'img_alt'       => 'delete',
-            'img_url'       => '/images/fff/cross.png',
+            'img_url'       => '/images/icons/fff/cross.png',
             'parameter'     => TRUE,
         ),
     );
@@ -210,7 +226,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access protected
      * @return string
      */
-    protected function _init(array $config){
+    protected function _init(array $config)
+    {
         $this->_baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         
         $this->_controllerName = Zend_Registry::get('controllerName');
@@ -233,7 +250,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return array
      */
-    public function getColumnNames(){
+    public function getColumnNames()
+    {
         return $this->_columnNames;
     }
     
@@ -243,7 +261,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return array
      */
-    public function getColumnIndexes(){
+    public function getColumnIndexes()
+    {
         return $this->_columnIndexes;
     }
     
@@ -253,7 +272,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return boolean
      */
-    public function canShowAddButton(){
+    public function canShowAddButton()
+    {
         return $this->_showAddButton;
     }
     
@@ -264,7 +284,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function canAdd(){
+    public function canAdd()
+    {
         return $this->can('add');
     }
     
@@ -277,10 +298,11 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function can($action, $controller = NULL){
+    public function can($action, $controller = NULL)
+    {
         $user = Zend_Auth::getInstance()->getIdentity();
         
-        if(NULL === $controller){
+        if (NULL === $controller) {
             $controller = $this->_controllerName;
         }
         
@@ -294,7 +316,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function addUrl($echo = TRUE){
+    public function addUrl($echo = TRUE)
+    {
         $url = $this->_baseUrl . '/' . $this->_controllerName . '/add';
         return $this->_return($url, $echo);
     }
@@ -308,7 +331,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function link($link, $item, $echo = TRUE){
+    public function link($link, $item, $echo = TRUE)
+    {
         if (!isset($this->_actions[$link])) {
             throw new Zend_Exception('Action ' . $link . ' is not registered');
         }
@@ -318,20 +342,24 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
         $url = $this->_baseUrl . '/' . $this->_controllerName . '/' . $action['action'];
         if ($action['parameter']) {
             if (!isset($item->id)) {
-                throw new Zend_Exception('This action requires a parameter. Please pass the correct array to this method.');
+                throw new Zend_Exception('This action requires a parameter. ' .
+                'Please pass the correct array to this method.');
             }
             $url .= '?id=' . $item->id;
         }
         
-        if(!isset($action['icon']) || (isset($action['icon']) && $action['icon'])){
+        if (!isset($action['icon']) || (isset($action['icon']) && $action['icon'])) {
             $link = '<li>' . PHP_EOL .
-                    '<a class="' . (isset($action['link_class'])? $action['link_class'] : '') . '"href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
-                    '<img src="' . $this->_baseUrl . $action['img_url'] . '" alt="' . $action['img_alt'] . '" />' . PHP_EOL .
+                    '<a class="' . (isset($action['link_class'])? $action['link_class'] : '') . 
+                        '"href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
+                    '<img src="' . $this->_baseUrl . $action['img_url'] . 
+                        '" alt="' . $action['img_alt'] . '" />' . PHP_EOL .
                     '</a>' . PHP_EOL .
                     '</li>' . PHP_EOL;
-        }else{
+        } else {
             $link = '<li>' . PHP_EOL .
-                    '<a class="' . (isset($action['link_class'])? $action['link_class'] : '') . '" href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
+                    '<a class="' . (isset($action['link_class'])? $action['link_class'] : '') . 
+                        '" href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
                     $action['title'] . PHP_EOL .
                     '</a>' . PHP_EOL .
                     '</li>' . PHP_EOL;
@@ -347,7 +375,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function links($item, $echo = TRUE){
+    public function links($item, $echo = TRUE)
+    {
         if (empty($this->_linkOrder)) {
             $order = array_keys($this->_actions);
         } else {
@@ -355,8 +384,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
         }
         
         $links = array();
-        foreach($order as $action) {
-            if($this->can($action)){
+        foreach ($order as $action) {
+            if ($this->can($action)) {
                 $links[] = $this->link($action, $item, FALSE);
             }
         }
@@ -377,7 +406,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function addMessage($echo = TRUE){
+    public function addMessage($echo = TRUE)
+    {
         if (empty($this->_addMessage)) {
             $controllerName = $this->_controllerName;
             if ($controllerName{strlen($controllerName) - 1} == 's') {
@@ -396,7 +426,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return void
      */
-    public function areYouSureMessage($echo = TRUE){
+    public function areYouSureMessage($echo = TRUE)
+    {
         if (empty($this->_areYouSureMessage)) {
             $controllerName = $this->_controllerName;
             if ($controllerName{strlen($controllerName) - 1} == 's') {
@@ -418,7 +449,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function pageTitle($echo = TRUE){
+    public function pageTitle($echo = TRUE)
+    {
         if (empty($this->_pageTitle)) {
             $action = Zend_Registry::get('actionName');
             if ($action == 'index' || $action == 'list') {
@@ -454,25 +486,24 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function displayItem($item, $index = NULL, $echo = TRUE){
+    public function displayItem($item, $index = NULL, $echo = TRUE)
+    {
         $viewLink = FALSE;
-        
-        if (NULL !== $index) {
-            if (isset($item->$index) && !empty($item->$index)) {
+        if (!is_null($index)) {
+            if (isset($item->{$index})) {
                 if ($index === $this->_viewLinkColumn) {
                     $viewLink = TRUE;
-                    $itemId = $item['id'];
+                    $itemId = $item->id;
                 }
                 
-                $item = $item->$index;
-            } else {
-                if (isset($this->_nullPlaceholders[$index])) {
-                    $result = $this->_nullPlaceholders[$index];
-                } else {
-                    $result = $this->_defaultNullPlaceholder;
+                $item = $item->{$index};
+            }else if(is_object($item) && !in_array($index, $this->_lazyLoad)){
+                if ($index === $this->_viewLinkColumn) {
+                    $viewLink = TRUE;
+                    $itemId = $item->id;
                 }
                 
-                return $this->_return($result, $echo);
+                $item = $item->get($index);
             }
         } else {
             if (empty($item)) {
@@ -489,21 +520,37 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
         } else {
             switch(TRUE){
                 case isset($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index] == 'datetime':
-                    $result = $this->view->formatDate($item);
+                    $result = $this->view->formatDate($item)->toString(Zend_Date::DATE_MEDIUM);
                     break;
                 case isset($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index] == 'boolean':
-                    if((bool) $item){
-                        $result = '<img src="/images/fff/tick.png" />';
-                    }else{
+                    if (!empty($item)) {
+                        $result = '<img src="/images/icons/fff/tick.png" />';
+                    } else {
                         $result = $item;
                     }
                     break;
-                case isset($this->_columnDataTypes[$index]) && (!is_array($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index] == 'money' || is_array($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index][0] == 'money'):
-                    if(is_array($this->_columnDataTypes[$index])){
-                        $result = $this->view->formatAmount($item, $this->data[$this->_columnDataTypes[$index][1]]);
+                case isset($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index] == 'image':
+                    $result = sprintf('<img src="%s" />', $this->view->CDN()->getUrl($item->filename, 80, 80));
+                    break;
+                case isset($this->_columnDataTypes[$index]) && $this->_columnDataTypes[$index] == 'file':
+                    if(!is_null($item)){
+                        $result = sprintf(
+                            '<a href="%s">%s</a>', 
+                            $this->view->CDN()->getUrl($item->filename), 
+                            $item->filename
+                        );
                     }else{
-                        $result = $this->view->formatAmount($item);
+                        $result = $this->_defaultNullPlaceholder;
                     }
+                    break;
+                case isset($this->_columnDataTypes[$index]) && (!is_array($this->_columnDataTypes[$index]) && 
+                    $this->_columnDataTypes[$index] == 'money' || is_array($this->_columnDataTypes[$index]) && 
+                    $this->_columnDataTypes[$index][0] == 'money'):
+                        if (is_array($this->_columnDataTypes[$index])) {
+                            $result = $this->view->formatAmount($item, $this->data[$this->_columnDataTypes[$index][1]]);
+                        } else {
+                            $result = $this->view->formatAmount($item);
+                        }
                     break;
                 default:
                     $result = $item;
@@ -511,8 +558,15 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
             }
         }
         
+        if (empty($result)) {
+            if (isset($this->_nullPlaceholders[$index])) {
+                $result = $this->_nullPlaceholders[$index];
+            } else {
+                $result = $this->_defaultNullPlaceholder;
+            }
+        }
+        
         if ($viewLink && $this->can('view')) {
-            
             $result = sprintf(
                 '<a href="%1$s" title="%2$s">%3$s</a>',
                 $this->_baseUrl . '/' . $this->_controllerName . '/view?id=' . $itemId,
@@ -522,6 +576,20 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
                 ),
                 $result
             );
+        } else {
+            if (array_key_exists($index, $this->_columnExtraLinks)) {
+                $parameters = array();
+                while (list($key, $value) = each($this->_columnExtraLinks[$index]['parameters'])) {
+                    $parameters[$key] = $item->{$value};
+                }
+                
+                $result = sprintf(
+                    '<a href="%1$s" title="%2$s">%3$s</a>',
+                    $this->view->url($parameters, $this->_columnExtraLinks[$index]['route']),
+                    sprintf('View details for %s', $result),
+                    $result
+                );
+            }
         }
         
         return $this->_return($result, $echo);
@@ -535,19 +603,21 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function columnCount($echo = TRUE){
+    public function columnCount($echo = TRUE)
+    {
         return $this->_return(count($this->_columnNames) + 1, $echo);
     }
     
     /**
      * If in a listing we don't have any items yet, this method will be
-     * called and it will display a 
+     * called and it will display a message
      * 
      * @param bool $echo 
      * @access public
      * @return string
      */
-    public function emptyMessage($echo = TRUE){
+    public function emptyMessage($echo = TRUE)
+    {
         if (!empty($this->_emptyMessage)) {
             $message = $this->_emptyMessage;
         } else {
@@ -564,13 +634,19 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return array
      */
-    public function getColumnNamesAndValues($item){
+    public function getColumnNamesAndValues($item)
+    {
         $array = array();
         
         reset($this->_columnNames);
-        foreach($this->_columnIndexes as $columnIndex){
+        foreach ($this->_columnIndexes as $columnIndex) {
             list(, $columnName) = each($this->_columnNames);
-            $array[$columnName] = $item->$columnIndex;
+            
+            if(isset($item->$columnIndex)){
+                $array[$columnName] = $item->$columnIndex;
+            }else if(in_array($columnIndex, $this->_lazyLoad)){
+                $array[$columnName] = $item->get($columnIndex);
+            }
         }
         
         return $array;
@@ -585,8 +661,9 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access protected
      * @return string
      */
-    protected function _return($string, $echo){
-        if($echo){
+    protected function _return($string, $echo)
+    {
+        if ($echo) {
             echo $string;
         } else {
             return $string;
@@ -600,7 +677,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string 
      */
-    public function beforeContentHook($echo = TRUE){
+    public function beforeContentHook($echo = TRUE)
+    {
         if (empty($this->_beforeContentHook)) {
             return;
         }
@@ -620,7 +698,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return string
      */
-    public function afterContentHook($echo = TRUE){
+    public function afterContentHook($echo = TRUE)
+    {
         if (empty($this->_afterContentHook)) {
             return;
         }
@@ -648,7 +727,8 @@ class App_Backoffice_View_Helper_ListingUtilities extends Zend_View_Helper_Abstr
      * @access public
      * @return App_View_Helper_ListingUtilities
      */
-    public function listingUtilities(array $config){
+    public function listingUtilities(array $config)
+    {
         $this->_init($config);
         return $this;
     }

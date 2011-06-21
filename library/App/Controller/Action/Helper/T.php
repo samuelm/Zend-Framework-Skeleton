@@ -5,7 +5,7 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
 /**

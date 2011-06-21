@@ -4,7 +4,7 @@
  *
  * @category App
  * @package App_Controller
- * @copyright Company
+ * @copyright company
  */
 
 class App_Controller_Action_Helper_Logger extends Zend_Controller_Action_Helper_Abstract
@@ -23,7 +23,7 @@ class App_Controller_Action_Helper_Logger extends Zend_Controller_Action_Helper_
      */
     public function init() {
         //Retrieve the main logger from the registry
-        $this->logger = Zend_Registry::get('Zend_Log');
+        $this->logger = App_DI_Container::get('GeneralLog');
     }
     
     /**

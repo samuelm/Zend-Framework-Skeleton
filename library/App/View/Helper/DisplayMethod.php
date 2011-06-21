@@ -7,7 +7,7 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
 class App_View_Helper_DisplayMethod extends App_View_Helper_DisplayClass

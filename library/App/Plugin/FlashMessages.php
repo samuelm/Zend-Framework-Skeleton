@@ -3,7 +3,7 @@
  * Handle the flash messages and pass it to the views
  *
  * @package App_Plugin
- * @copyright Company
+ * @copyright company
  */
  
 class App_Plugin_FlashMessages extends Zend_Controller_Plugin_Abstract

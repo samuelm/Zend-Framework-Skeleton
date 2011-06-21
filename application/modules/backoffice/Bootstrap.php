@@ -5,19 +5,10 @@
  *
  * @category  backoffice
  * @package   backoffice_bootstrap
- * @copyright Company
+ * @copyright company
  */
-class Backoffice_Bootstrap extends App_Bootstrap_Abstract {
-
-    /**
-     * Inits the backoffice user actions logger (BigBrother)
-     * 
-     * @access protected
-     * @return void     
-     */
-    protected function _initBigBrother(){
-    }
-    
+class Backoffice_Bootstrap extends App_Bootstrap_Abstract
+{
     /**
      * Inits the session for the backoffice
      * 
@@ -35,9 +26,24 @@ class Backoffice_Bootstrap extends App_Bootstrap_Abstract {
      * @return void
      */
     protected function _initPaginator(){
-        Zend_Paginator::setDefaultScrollingStyle(Zend_Registry::get('config')->paginator->scrolling_style);
+        Zend_Paginator::setDefaultScrollingStyle(App_DI_Container::get('ConfigObject')->paginator->scrolling_style);
         Zend_View_Helper_PaginationControl::setDefaultViewPartial(
             'default.phtml'
         );
+    }
+    
+    /**
+     * Initializes the view helpers for the application
+     * 
+     * @access protected
+     * @return void     
+     */
+    protected function _initViewHelpers() {
+        $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+        if (NULL === $viewRenderer->view) {
+            $viewRenderer->initView();
+        }
+        
+        $viewRenderer->view->addHelperPath('App/Backoffice/View/Helper', 'App_Backoffice_View_Helper');
     }
 }

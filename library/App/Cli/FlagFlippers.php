@@ -5,7 +5,7 @@
  * @category App
  * @package App_Cli
  * @subpackage App_Cli_FlagFlippers
- * @copyright Company
+ * @copyright company
  */
 
 class App_Cli_FlagFlippers

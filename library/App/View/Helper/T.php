@@ -5,7 +5,7 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
 /**
@@ -28,7 +28,12 @@ class App_View_Helper_T extends Zend_View_Helper_Abstract{
             return $this;
         }
         
-        $translate = Zend_Registry::get('Zend_Translate');
+        if(Zend_Registry::isRegistered('Zend_Translate')){
+            $translate = Zend_Registry::get('Zend_Translate');
+        }else{
+            Zend_Registry::get('Bootstrap')->bootstrap('Translator');
+        }
+        
         $options   = func_get_args();
         
         array_shift($options);

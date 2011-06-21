@@ -5,7 +5,7 @@
  *
  * @category App
  * @package App_Model
- * @copyright Company
+ * @copyright company
  */
 
 class BaseUser extends App_Model
@@ -15,7 +15,8 @@ class BaseUser extends App_Model
      * username and email
      * 
      * @param string $username
-     * @param string $password 
+     * @param string $password
+     * @param boolean $remember
      * @access public
      * @return void
      */
@@ -28,8 +29,15 @@ class BaseUser extends App_Model
         
         // checking credentials
         $adapter->setIdentity($username);
-        $adapter->setCredential(self::hashPassword($password));
-        $result = $adapter->authenticate();
+        $adapter->setCredential(BaseUser::hashPassword($password));
+        
+        try{
+            $result = $adapter->authenticate();
+        }catch(Zend_Auth_Adapter_Exception $e){
+            App_Logger::log(sprintf("Exception catched while login: %s", $e->getMessage()),Zend_Log::ERR);
+            
+            return FALSE;
+        }
         
         if($result->isValid()){
             // get the user row
@@ -47,24 +55,31 @@ class BaseUser extends App_Model
             if(!empty($loggedUser->id)){
                 switch(CURRENT_MODULE){
                     case 'frontend':
-                        $userModel = new self();
+                        $userModel = new User();
                         $user = $userModel->findById($loggedUser->id);
-                        $user->group = $user->findParentRow('Group');
+                        $user->get('group');
+                        
+                        $session = new stdClass();
+                        
+                        foreach(get_object_vars($loggedUser) as $k => $v){
+                            $session->{$k} = $v;
+                        }
+                        $session->group->name = $user->get('group')->name;
                         break;
                     case 'backoffice':
                         $userModel = new BackofficeUser();
                         $user = $userModel->findById($loggedUser->id);
                         $user->groups = $user->findManyToManyRowset('Group', 'BackofficeUserGroup');
                         $user->group = $user->groups[0];
+                        
+                        $session = new stdClass();
+                        
+                        foreach(get_object_vars($loggedUser) as $k => $v){
+                            $session->{$k} = $v;
+                        }
+                        $session->group->name = $user->group->name;
                         break;
                 }
-                
-                $session = new stdClass();
-                
-                foreach(get_object_vars($loggedUser) as $k => $v){
-                    $session->{$k} = $v;
-                }
-                $session->group->name = $user->group->name;
                 
                 $auth->getStorage()->write($session);
             }
@@ -77,7 +92,7 @@ class BaseUser extends App_Model
             );
             
             if($rememberMe){
-                Zend_Session::rememberMe(Zend_Registry::get('config')->session->remember_me->lifetime);
+                Zend_Session::rememberMe(App_DI_Container::get('ConfigObject')->session->remember_me->lifetime);
             }else{
                 Zend_Session::forgetMe();
             }
@@ -97,7 +112,7 @@ class BaseUser extends App_Model
      * @return string
      */
     public static function hashPassword($password){
-        $config = Zend_Registry::get('config');
+        $config = App_DI_Container::get('ConfigObject');
         $module = strtolower(CURRENT_MODULE);
         return sha1($config->{$module}->security->passwordsalt . $password);
     }
@@ -110,7 +125,8 @@ class BaseUser extends App_Model
     public static function getUserInstance(){
         $userModel = new User();
         
-        $session = self::getSession();
+        $session = BaseUser::getSession();
+        
         return isset($session->id)? $userModel->findById($session->id) : NULL;
     }
     
@@ -120,7 +136,7 @@ class BaseUser extends App_Model
      * @return void
      */
     public static function isLogged(){
-        $user = self::getSession();
+        $user = BaseUser::getSession();
         
         return isset($user->id);
     }
@@ -137,7 +153,7 @@ class BaseUser extends App_Model
             case 'frontend':
                 $userModel = new User();
                 $user = $userModel->findById(self::getSession()->id);
-                $user->group = $user->findParentRow('Group');
+                $user->get('group');
                 break;
             case 'backoffice':
                 $userModel = new BackofficeUser();
@@ -151,7 +167,7 @@ class BaseUser extends App_Model
         foreach($user as $k => $v){
             $session->{$k} = $v;
         }
-        $session->group->name = $user->group->name;
+        $session->group->name = $user->get('group')->name;
         
         $auth->getStorage()->write($session);
     }

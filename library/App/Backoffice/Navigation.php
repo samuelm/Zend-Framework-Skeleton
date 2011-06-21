@@ -6,7 +6,7 @@
  * @category App
  * @package App_Backoffice
  * @subpackage Navigation
- * @copyright Company
+ * @copyright company
  */
 
 class App_Backoffice_Navigation 
@@ -71,27 +71,49 @@ class App_Backoffice_Navigation
     protected function _getPages(){
         $pages = array(
             array(
-                'label' => 'System',
+                'main' => array(
+                    'label' => 'Dashboard',
+                    'controller' => 'profile',
+                    'action' => 'index'
+                ),
+                'pages' => array(
+                    array(
+                        'label' => 'Summary',
+                        'controller' => 'profile',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            array(
+                'main' => array(
+                    'label' => 'System',
+                    'controller' => 'system',
+                    'action' => 'index'
+                ),
                 'pages' => array(
                     array(
                         'label' => 'Groups',
                         'controller' => 'groups',
                         'action' => 'index',
+                        'scope' => '*'
                     ),
                     array(
                         'label' => 'Users',
                         'controller' => 'users',
                         'action' => 'index',
+                        'scope' => '*'
                     ),
                     array(
                         'label' => 'Privileges',
                         'controller' => 'privileges',
                         'action' => 'index',
+                        'scope' => '*'
                     ),
                     array(
                         'label' => 'Flags',
                         'controller' => 'flags',
                         'action' => 'index',
+                        'scope' => '*'
                     ),
                 ),
             ),
@@ -109,22 +131,13 @@ class App_Backoffice_Navigation
      * @return array
      */
     protected function _filter($data){
-        $user = Zend_Auth::getInstance()->getIdentity();
-        
         $filtered = array();
         
         foreach($data as $tab){
             $filteredPages = array();
             if(isset($tab['pages'])){
                 foreach($tab['pages'] as $page){
-                    try{
-                        if(App_FlagFlippers_Manager::isAllowed($user->username, $page['controller'], $page['action'])){
-                            $filteredPages[] = $page;
-                        }
-                    }catch(Zend_Exception $e){
-                        // resource not yet registered, will be picked up by the App_Backoffice_Controller
-                        // when the user tries to access it. Add it for now for testing purposes
-                        
+                    if(App_FlagFlippers_Manager::isAllowed(NULL, $page['controller'], $page['action'])){
                         $filteredPages[] = $page;
                     }
                 }
@@ -132,7 +145,7 @@ class App_Backoffice_Navigation
             
             if(!empty($filteredPages)){
                 $filteredTab = array(
-                    'label' => $tab['label'],
+                    'main' => $tab['main'],
                     'pages' => $filteredPages,
                 );
                 
@@ -152,19 +165,20 @@ class App_Backoffice_Navigation
      */
     protected function _markActive($menu){
         $controllerName = Zend_Registry::get('controllerName');
+        $actionName = Zend_Registry::get('actionName');
         
-        foreach($menu as $tabkey => $tab){
+        foreach($menu as $tabKey => $tab){
+            if ($controllerName === $tab['main']['controller'] && $actionName === $tab['main']['action']){
+                $menu[$tabKey]['main']['active'] = TRUE;
+            }
+            
             if(isset($tab['pages'])){
                 foreach($tab['pages'] as $pagekey => $page) {
-                    if ($controllerName === $page['controller']) {
-                        $menu[$tabkey]['pages'][$pagekey]['active'] = true;
-                        $menu[$tabkey]['active'] = true;
+                    if($controllerName === $page['controller'] && ($actionName === $page['action'] || (array_key_exists('scope', $page) && $page['scope'] == '*'))){
+                        $menu[$tabKey]['pages'][$pagekey]['active'] = TRUE;
+                        $menu[$tabKey]['main']['active'] = TRUE;
                         break;
                     }
-                }
-            }else{
-                if ($controllerName === $tab['controller']){
-                    $menu[$tabkey]['active'] = true;
                 }
             }
         }
@@ -180,5 +194,16 @@ class App_Backoffice_Navigation
      */
     public function getNavigation(){
         return $this->_navigation;
+    }
+    
+    /**
+     * Update the navigation array
+     * 
+     * @access public
+     * @param array $menu
+     * @return array
+     */
+    public function setNavigation(array $menu){
+        $this->_navigation = $menu;
     }
 }

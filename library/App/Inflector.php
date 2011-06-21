@@ -4,7 +4,7 @@
  *
  * @category App
  * @package App
- * @copyright Company
+ * @copyright company
  */
 
 class App_Inflector
@@ -55,6 +55,43 @@ class App_Inflector
     }
     
     /**
+     * Converts a camelCasedString to lower cased string with
+     * words separated by underscores
+     *
+     * Ex: myCamelCasedString => my_camel_cased_string
+     * 
+     * @param string $string 
+     * @access public
+     * @return string
+     */
+    public static function camelCaseToUnderscore($string){
+        $string = preg_replace('/([A-Z]+)([A-Z])/','$1_$2', $string);
+        $string = preg_replace('/([a-z])([A-Z])/', '$1_$2', $string);
+        
+        return strtolower($string);
+    }
+    
+    /**
+     * Converts a underscored string to camelCasedString
+     * 
+     * Ex: my_camel_cased_string => myCamelCasedString
+     *
+     * @param string $string 
+     * @access public
+     * @return string
+     */
+    public static function unserscoreToCamelCase($string){
+        $words = explode('_', strtolower($string));
+        
+        $string = '';
+        foreach ($words as $word) {
+            $string .= ucfirst(trim($word));
+        }
+        
+        return $string;
+    }
+    
+    /**
      * Converts a dashed or underscored string to a humanly readable
      * one. Ex:
      * my-action-controller => My action controller
@@ -75,7 +112,11 @@ class App_Inflector
      * @return string
      */
     public static function slug($string){
-        $string = preg_replace('/([^a-z0-9]){1,}/', '-', strtolower($string));
-        return $string;
+        $clean = str_replace(' ', '-', $string);
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $clean);
+        $clean = preg_replace("/[^a-zA-Z0-9\/_|+-]/", '', $clean);
+        $clean = strtolower(trim($clean, '-'));
+        
+        return $clean;
     }
 }

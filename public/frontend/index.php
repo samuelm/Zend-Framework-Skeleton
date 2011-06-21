@@ -5,7 +5,7 @@
  * @category public
  * @package public
  * @subpackage public_frontend
- * @copyright Company
+ * @copyright company
  */
 
 

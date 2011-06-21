@@ -6,7 +6,7 @@
  *
  * @category App
  * @package App_Controller
- * @copyright Company
+ * @copyright company
  */
 
 class App_Controller_Action_Helper_FlagFlippers extends Zend_Controller_Action_Helper_Abstract

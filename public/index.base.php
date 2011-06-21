@@ -5,7 +5,7 @@
  *
  * @category public
  * @package public
- * @copyright Company
+ * @copyright company
  */
 
 // define the application path constant
@@ -20,5 +20,8 @@ $paths = array(
 set_include_path(implode(PATH_SEPARATOR, $paths));
 
 require APPLICATION_PATH . '/Bootstrap.php';
-$boostrap = new Bootstrap();
-$boostrap->runApp();
+$bootstrap = new Bootstrap();
+
+Zend_Registry::set('Bootstrap', $bootstrap);
+
+$bootstrap->runApp();

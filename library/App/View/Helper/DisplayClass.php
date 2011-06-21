@@ -6,7 +6,7 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
 class App_View_Helper_DisplayClass extends Zend_View_Helper_Abstract

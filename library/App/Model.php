@@ -1,10 +1,10 @@
 <?php
 /**
- * Default model class for all Neo models
+ * Default model class for all company models
  *
  * @category App
  * @package App_Model
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Model extends Zend_Db_Table_Abstract
@@ -73,7 +73,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @access public
      * @return int
      */
-    public function insert($data){
+    public function insert(array $data){
         $data = $this->_filter($data);
         return parent::insert($data);
     }
@@ -86,7 +86,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
      * @access public
      * @return int
      */
-    public function update($data, $where){
+    public function update(array $data, $where){
         $data = $this->_filter($data);
         $where = $this->_normalizeWhere($where);
         
@@ -106,10 +106,10 @@ abstract class App_Model extends Zend_Db_Table_Abstract
     }
     
     /**
-     * Find a casting by slug
+     * Find by slug
      *
      * @param string $slug 
-     * @return App_Table_Casting
+     * @return App_Table
      */
     public function findBySlug($slug){
         $select = $this->select();
@@ -409,7 +409,7 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         
         $paginator = Zend_Paginator::factory($select);
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(Zend_Registry::get('config')->paginator->items_per_page);
+        $paginator->setItemCountPerPage(App_DI_Container::get('ConfigObject')->paginator->items_per_page);
         
         return $paginator;
     }
@@ -431,5 +431,18 @@ abstract class App_Model extends Zend_Db_Table_Abstract
         }
         
         return $this->_name;
+    }
+    
+    /**
+     * Ability to use different db adapters
+     *
+     * @return void
+     */
+    protected function _setupDatabaseAdapter(){
+        if(isset($this->_adapter)){
+            $this->_db = Zend_Registry::get($this->_adapter);
+        }else{
+            $this->_db = Zend_Db_Table_Abstract::getDefaultAdapter();
+        }
     }
 }

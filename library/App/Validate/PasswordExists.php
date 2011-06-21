@@ -8,7 +8,7 @@
  *
  * @category App
  * @package App_Validate
- * @copyright Company
+ * @copyright company
  */
 
 class App_Validate_PasswordExists extends Zend_Validate_Db_RecordExists

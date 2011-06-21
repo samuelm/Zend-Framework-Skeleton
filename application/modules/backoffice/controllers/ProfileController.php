@@ -4,7 +4,7 @@
  *
  * @category backoffice
  * @package backoffice_controllers
- * @copyright Company
+ * @copyright company
  */
 
 class ProfileController extends App_Backoffice_Controller
@@ -55,7 +55,7 @@ class ProfileController extends App_Backoffice_Controller
         }else{
             $user = Zend_Auth::getInstance()->getIdentity();
             $row = $userModel->findById($user->id);
-            $form->populate($row);
+            $form->populate($row->toArray());
             $this->view->item = $row;
         }
         

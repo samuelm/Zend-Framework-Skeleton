@@ -5,7 +5,7 @@
  *
  * @category backoffice
  * @package backoffice_forms
- * @copyright Company
+ * @copyright company
  */
 
 class DeleteMultipleForm extends App_Backoffice_Form

@@ -5,7 +5,7 @@
  *
  * @category App
  * @package App_Table
- * @copyright Company
+ * @copyright company
  */
 
 class App_Table_Privilege extends App_Table

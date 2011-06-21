@@ -3,7 +3,7 @@
  * Default parent controller for all the frontend controllers
  *
  * @package App_Controller
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Frontend_Controller extends App_Controller
@@ -41,16 +41,13 @@ abstract class App_Frontend_Controller extends App_Controller
         
         Zend_Registry::set('controllerName', $controllerName);
         Zend_Registry::set('actionName', $actionName);
+        Zend_Registry::set('Zend_Request', $this->getRequest());
         // check the Flag and Flipper
         $this->_checkFlagFlippers();
         
         $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery.min.js');
         $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery-ui.min.js');
         $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery-ui-i18n.js');
-        
-        $this->view->yahooKey = YAHOO_API_KEY;
-        $this->view->jsLocale = JS_LOCALE;
-        $this->view->user = BaseUser::getSession();
     }
     
     /**
@@ -62,7 +59,11 @@ abstract class App_Frontend_Controller extends App_Controller
     public function postDispatch(){
         parent::postDispatch();
         
-        $this->view->headTitle($this->title);
+        if(isset($this->title)){
+            $this->view->headTitle($this->title);
+        }else{
+            $this->view->headTitle('');
+        }
     }
     
     /**
@@ -88,7 +89,7 @@ abstract class App_Frontend_Controller extends App_Controller
      * @return Zend_Session_Namespace
      */
     protected function _getSessionNamespace($key){
-        if(NULL === $this->_session[$key]){
+        if(!array_key_exists($key, $this->_session)){
             $this->_session[$key] = new Zend_Session_Namespace($key);
         }
         

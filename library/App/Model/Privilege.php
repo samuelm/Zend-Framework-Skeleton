@@ -3,7 +3,7 @@
  * Model that manages the privileges
  *
  * @package backoffice_models
- * @copyright Company
+ * @copyright company
  */
 
 class Privilege extends App_Model
@@ -112,7 +112,7 @@ class Privilege extends App_Model
         
         $paginator = Zend_Paginator::factory($privileges);
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(Zend_Registry::get('config')->paginator->items_per_page);
+        $paginator->setItemCountPerPage(App_DI_Container::get('ConfigObject')->paginator->items_per_page);
         
         return $paginator;
     }

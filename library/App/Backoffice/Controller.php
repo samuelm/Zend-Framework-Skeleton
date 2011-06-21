@@ -4,7 +4,7 @@
  *
  * @category App
  * @package App_Backoffice
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Backoffice_Controller extends App_Controller
@@ -38,6 +38,8 @@ abstract class App_Backoffice_Controller extends App_Controller
         
         $controllerName = $this->getRequest()->getControllerName();
         $actionName = $this->getRequest()->getActionName();
+        
+        $this->view->headScript()->prependFile($this->view->baseUrl() . '/js/jquery.min.js');
         
         Zend_Registry::set('controllerName', $controllerName);
         Zend_Registry::set('actionName', $actionName);

@@ -30,7 +30,7 @@
  *
  * @category App
  * @package App_Bootstrap
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Bootstrap_Abstract

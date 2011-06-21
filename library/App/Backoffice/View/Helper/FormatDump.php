@@ -5,10 +5,10 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
-class App_Backoffice_View_Helper_FormatDump extends Zend_View_Helper_Abstract
+class App_View_Helper_FormatDump extends Zend_View_Helper_Abstract
 {
     /**
      * Convenience method

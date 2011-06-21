@@ -4,33 +4,28 @@
  *
  * @category backoffice
  * @package backoffice_layouts
- * @copyright Company
+ * @copyright company
  */
 
 // configure the title
 $this->headTitle()->setSeparator(' - ');
-$this->headTitle('Company');
-
-// add generic scripts
-$this->headScript()->appendFile($this->baseUrl() . '/js/jquery.min.js');
-$this->headScript()->appendFile($this->baseUrl() . '/js/ddpng.js');
-$this->headScript()->appendFile($this->baseUrl() . '/js/hoverIntent.js');
-$this->headScript()->appendFile($this->baseUrl() . '/js/superfish.js');
-$this->headScript()->appendFile($this->baseUrl() . '/js/backoffice.js');
+$this->headTitle('company Backoffice');
 
 // add generic CSS files
+$this->headLink()->appendStylesheet($this->baseUrl() . '/css/gridsystem.css');
 $this->headLink()->appendStylesheet($this->baseUrl() . '/css/backoffice.css');
-$this->headLink()->appendStylesheet($this->baseUrl() . '/css/superfish.css');
 
 //Add the ZFDebug Toolbar only if enabled in app.ini
-if(Zend_Registry::get('config')->zfdebug->enabled){
-    $this->headScript()->appendFile($this->baseUrl() . '/js/zfdebug.js');
+if(Zend_Controller_Front::getInstance()->hasPlugin('ZFDebug_Controller_Plugin_Debug')){
+    $this->headScript()->offsetSetFile(2, $this->baseUrl() . '/js/zfdebug.js');
     $this->headLink()->appendStylesheet($this->baseUrl() . '/css/zfdebug.css');
 }
 
 $user = Zend_Auth::getInstance()->getIdentity();
 
 $bodyClass = Zend_Registry::get('controllerName') . Zend_Registry::get('actionName');
+
+$this->AutoloadResources();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
@@ -41,75 +36,52 @@ $bodyClass = Zend_Registry::get('controllerName') . Zend_Registry::get('actionNa
         <meta http-equiv="content-style-type" content="text/css" /> 
         <meta http-equiv="content-script-type" content="text/javascript" /> 
         
+        <link rel="shortcut icon" type="image/ico" href="<?php echo $this->baseUrl();?>/images/favicon.png" />
+        
         <?php echo $this->headTitle() . PHP_EOL;?>
-        <?php echo $this->headScript() . PHP_EOL;?>
         <?php echo $this->headLink() . PHP_EOL;?>
         
-        <!--[if lte IE 7.0]>
-            <link rel="stylesheet" type="text/css" href="css/ie.css" media="screen, projection, tv" />
-        <![endif]--> 
-        
-        <!--[if IE 8.0]>
+        <!--[if !IE 7]>
             <style type="text/css">
-                form.fields fieldset {margin-top: -10px;}
+                div.wrapper {display:table;height:100%}
             </style>
-        <![endif]--> 
+        <![endif]-->
+    </head>
+    <body class="<?php echo $bodyClass;?>">
+        <div class="wrapper">
+            <div id="header" class="container_12">
+                <a id="logo" title="Company BackOffice" class="grid_1" href="<?php echo $this->baseUrl();?>/">Company <span>BackOffice</span></a>
+                <?php echo $this->renderMenu();?>
+                <div id="user-nav" class="grid_11 clearfix">
+                    <ul>
+                        <li>
+                            <a class="user" href="<?php echo $this->baseUrl();?>/profile/edit/"><?php echo $user->firstname . ' ' . $user->lastname;?></a>
+                            <?php echo $this->EasterEgg()->emoticon(); ?>
+                        </li>
+                        <li><a href="<?php echo $this->baseUrl();?>/profile/change-password/">Change password</a></li> 
+                        <li class="last"><a id="logout" href="<?php echo $this->baseUrl();?>/profile/logout/">Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
         
-        <!-- Adding support for transparent PNGs in IE6: --> 
-        <!--[if lte IE 6]>
-            <script type="text/javascript" src="<?php echo $this->baseUrl();?>/js/ddpng.js"></script>
-            <script type="text/javascript">
-                DD_belatedPNG.fix('.ico img');
-                DD_belatedPNG.fix('.msg p');
-                DD_belatedPNG.fix('table.calendar thead th.month a img');
-                DD_belatedPNG.fix('table.calendar tbody img');
-            </script>
-        <![endif]--> 
-    </head> 
-    <body class="<?php echo $bodyClass;?>"> 
-        <div id="header"> 
-            <div class="inner-container clearfix"> 
-                
-                <h1 id="logo"> 
-                    <a class="home" href="<?php echo $this->baseUrl();?>/" title="Go to admin's homepage"> 
-                        Company backoffice
-                    </a> 
-                </h1> 
-                
-                <div id="userbox"> 
-                    <div class="inner"> 
-                        <strong>
-                            <a href="<?php echo $this->baseUrl();?>/profile/edit/">
-                                <a class="user" href="<?php echo $this->baseUrl();?>/profile/edit/"><?php echo $user->firstname . ' ' . $user->lastname;?></a>
-                                <?php echo $this->EasterEgg()->emoticon(); ?>
-                            </a>
-                        </strong>
-                        <ul class="clearfix"> 
-                            <li><a href="<?php echo $this->baseUrl();?>/profile/change-password/">Change password</a></li> 
-                        </ul> 
-                    </div> 
-                    <a id="logout" href="<?php echo $this->baseUrl();?>/profile/logout/">log out</a> 
-                </div><!-- #userbox --> 
-                
-            </div><!-- .inner-container --> 
-        </div><!-- #header --> 
-                
-        <div id="container"> 
-            <?php echo $this->renderMenu();?>
-            <div class="outer-container"> 
-                <div class="inner-container"> 
+            <div id="container" class="container_12 clearfix">
+                <div id="sec-nav" class="container_12">
+                    <?php echo $this->renderSubMenu();?>
+                </div>
+            
+                <div id="content" class="grid_12">
                     <!-- flash messenger - displays success / fail messages to the user -->
                     <?php echo $this->flashMessenger();?>
-                    <!-- end of flashMessenger -->
+                
                     <!-- main content - the content of the view will be rendered here -->
                     <?php echo $this->layout()->content;?>
-                    <!-- end of main content -->
-                </div> 
-                <div id="footer"><!-- footer, maybe you don't need it --> 
-                    <p>Copyright © 2010 Company, All rights reserved.</p> 
-                </div> 
-            </div><!-- .inner-container --> 
-            </div> 
-        </div><!-- #container --> 
+                </div>
+            </div>
+        </div>
+        
+        <div id="footer">
+            © Company BackOffice — 2010
+        </div>
+        <?php echo $this->headScript() . PHP_EOL;?>
     </body> 
 </html>

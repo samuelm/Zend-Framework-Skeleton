@@ -5,7 +5,7 @@
 *
 * @category App
 * @package App_Validate
-* @copyright Company
+* @copyright company
 */
 
 class App_Validate_SameAs extends Zend_Validate_Abstract {

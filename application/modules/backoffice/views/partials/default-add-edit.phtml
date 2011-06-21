@@ -6,18 +6,14 @@
  * @category backoffice
  * @package backoffice_views
  * @subpackage partials
- * @copyright Company
+ * @copyright company
  */
 
 $helper = $this->listingUtilities($this->config);
 
 ?>
-<div class="box altbox"> 
-    <div class="boxin"> 
-        <div class="header"> 
-            <h1><?php $helper->pageTitle();?></h1>
-        </div> 
-        <?php echo $this->form;?>
-    </div> 
-</div>
 
+<div class="header"> 
+    <h1><?php $helper->pageTitle();?></h1>
+</div> 
+<?php echo $this->form;?>

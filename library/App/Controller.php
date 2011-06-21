@@ -4,11 +4,44 @@
  *
  * @category App
  * @package App_Controller
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Controller extends Zend_Controller_Action
 {
+    /**
+     * Store the available commands
+     *
+     * @var array
+     */
+    private $_commands = array();
+    
+    /**
+     * Add a new command to the chain
+     *
+     * @param object $cmd
+     * @return void
+     */
+    protected function _addCommand($cmd){
+        if(is_object($cmd) && !array_key_exists(get_class($cmd), $this->_commands)){
+            $this->_commands[get_class($cmd)] = $cmd;
+        }
+    }
+    
+    /**
+     * Run a command through the command chain
+     *
+     * @param string $name
+     * @param mixed $args
+     * @return void
+     */
+    protected function _runCommand($name, $args){
+        foreach($this->_commands as $cmd){
+            if($result = $cmd->onCommand($name, $args)){
+                return $result;
+            }
+        }
+    }
     
     /**
      * Queries the Flag and Flipper and redirects the user to a different
@@ -49,12 +82,26 @@ abstract class App_Controller extends Zend_Controller_Action
             if(empty($user->id)){
                 // the user is a guest, save the request and redirect him to
                 // the login page
-                $session = new Zend_Session_Namespace('App.' . CURRENT_MODULE . '.Controller');
+                $session = new Zend_Session_Namespace('FrontendRequest');
                 $session->request = serialize($this->getRequest());
                 $this->_redirect('/profile/login/');
             }else{
                 $this->_redirect('/error/forbidden/');
             }
         }
+    }
+    
+    /**
+     * Convenience method to get the paginator
+     *
+     * @param mixed $array 
+     * @return void
+     */
+    protected function _getPaginator($array){
+        $paginator = Zend_Paginator::factory($array);
+        $paginator->setCurrentPageNumber($this->_getPage());
+        $paginator->setItemCountPerPage(App_DI_Container::get('ConfigObject')->paginator->items_per_page);
+        
+        return $paginator;
     }
 }

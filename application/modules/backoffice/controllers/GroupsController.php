@@ -4,7 +4,7 @@
  *
  * @category backoffice
  * @package backoffice_controllers
- * @copyright Company
+ * @copyright company
  */
 
 class GroupsController extends App_Backoffice_Controller

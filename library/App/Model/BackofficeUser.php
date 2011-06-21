@@ -4,7 +4,7 @@
  *
  * @category backoffice
  * @package backoffice_models
- * @copyright Company
+ * @copyright company
  */
 
 class BackofficeUser extends BaseUser

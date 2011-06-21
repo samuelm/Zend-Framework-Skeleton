@@ -3,7 +3,7 @@
  * Default entry point in the application
  *
  * @package frontend_controllers
- * @copyright Company
+ * @copyright company
  */
 
 class IndexController extends App_Frontend_Controller
@@ -14,9 +14,12 @@ class IndexController extends App_Frontend_Controller
      * @access public
      * @return void
      */
-    public function init(){
+    public function init()
+    {
         // init the parent
         parent::init();
+        
+        $this->_addCommand(new App_Command_SendEmail());
     }
     
     /**
@@ -25,6 +28,23 @@ class IndexController extends App_Frontend_Controller
      * @access public
      * @return void
      */
-    public function indexAction(){
+    public function indexAction()
+    {
+    }
+    
+    /**
+     * Static Pages
+     *
+     * @return void
+     */
+    public function staticAction()
+    {
+        $page = $this->getRequest()->getParam('page');
+        
+        if (empty($page)) {
+            throw new Exception('Invalid static page identifier');
+        } else {
+            $this->render($page);
+        }
     }
 }

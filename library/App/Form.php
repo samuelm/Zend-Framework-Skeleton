@@ -4,9 +4,18 @@
  *
  * @category App
  * @package App_Form
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Form extends Zend_Form
 {
+    /**
+     * Convenience method to recognize translatable text with gettext
+     *
+     * @param string $text 
+     * @return void
+     */
+    public function t($text){
+        return $text;
+    }
 }

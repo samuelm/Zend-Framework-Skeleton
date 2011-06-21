@@ -4,7 +4,7 @@
  *
  * @category App
  * @package App_FlagFlippers
- * @copyright Company
+ * @copyright company
  */
 class App_Logger
 {
@@ -16,14 +16,14 @@ class App_Logger
      * @return void
      */
     public static function log($msg, $level = Zend_Log::INFO){
-        Zend_Registry::get('Zend_Log')->log($msg, $level);
+        App_DI_Container::get('GeneralLog')->log($msg, $level);
         
         if($level == Zend_Log::ERR){
-            Zend_Registry::get('SNSFrontendErrors')->publish('Critical Error', $msg);
+            App_DI_Container::get('SNSFrontendErrors')->publish('Critical Error', $msg);
         }
         
         if($level == Zend_Log::INFO){
-            Zend_Registry::get('SNSFrontendInfo')->publish('Info event', $msg);
+            App_DI_Container::get('SNSFrontendInfo')->publish('Info event', $msg);
         }
     }
 }

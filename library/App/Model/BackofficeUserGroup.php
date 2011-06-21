@@ -6,7 +6,7 @@
  *
  * @category backoffice
  * @package backoffice_models
- * @copyright Company
+ * @copyright company
  */
 
 class BackofficeUserGroup extends App_Model
@@ -63,17 +63,17 @@ class BackofficeUserGroup extends App_Model
      * @return array
      */
     public function findByUserId($userId, $fullData = FALSE){
-        $select = new Zend_Db_Select($this->_db);
-        if (!$fullData) {
-            $select->from($this->_name);
-        } else {
+        $select = $this->_select();
+        $select->setIntegrityCheck(FALSE);
+        
+        if ($fullData) {
             $select->from(array('ug' => $this->_name));
             $select->join(array('g' => 'groups'), 'ug.group_id = g.id');
         }
         
         $select->where('user_id = ?', $userId);
         
-        return $this->_db->fetchAll($select);
+        return $this->fetchAll($select);
     }
     
     /**

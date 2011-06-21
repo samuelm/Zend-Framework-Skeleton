@@ -6,7 +6,7 @@
  * @category App
  * @package App_Form
  * @subpackage Decorator
- * @copyright Company
+ * @copyright company
  */
 
 class App_Form_Decorator_Label extends Zend_Form_Decorator_Label

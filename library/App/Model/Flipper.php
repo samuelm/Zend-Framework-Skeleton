@@ -10,7 +10,7 @@
  * For details, see http://framework.zend.com/manual/en/zend.acl.introduction.html
  *
  * @package backoffice_models
- * @copyright Company
+ * @copyright company
  */
 
 class Flipper extends App_Model
@@ -70,8 +70,7 @@ class Flipper extends App_Model
      * @return void
      */
     public function findByGroupId($groupId){
-        $select = $this->select();
-        $select->from($this->_name);
+        $select = $this->_select();
         $select->where('group_id = ?', $groupId);
         
         return $this->fetchAll($select);

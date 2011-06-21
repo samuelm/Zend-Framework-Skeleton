@@ -5,7 +5,7 @@
  *
  * @category App
  * @package App_Exception
- * @copyright Company
+ * @copyright company
  */
 
 class App_Exception_UserMessage extends Zend_Exception

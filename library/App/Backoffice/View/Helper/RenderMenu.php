@@ -5,34 +5,26 @@
  * @category App
  * @package App_View
  * @subpackage Helper
- * @copyright Company
+ * @copyright company
  */
 
-class App_Backoffice_View_Helper_RenderMenu extends Zend_View_Helper_Abstract
+class App_View_Helper_RenderMenu extends Zend_View_Helper_Abstract
 {
-    /**
-     * Template for the tabs at the top
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $_tabLinkTemplate = '<a href="javascript:return false;" title="%1$s">%1$s</a>';
-    
     /**
      * Template for the links
      * 
      * @var string
      * @access protected
      */
-    protected $_linkTemplate = '<a href="%1$s" title="%2$s">%2$s</a>';
+    protected $_linkTemplate = '<li><a href="%1$s" title="%2$s">%2$s</a></li>';
     
     /**
-     * Template for the currently selected link
+     * Template for the selected link
      * 
      * @var string
      * @access protected
      */
-    protected $_currentLinkTemplate = '<a class="current" href="%1$s" title="%2$s">%2$s</a>';
+    protected $_linkSelectedTemplate = '<li class="selected"><a href="%1$s" title="%2$s">%2$s</a></li>';
     
     /**
      * Convenience method
@@ -48,53 +40,24 @@ class App_Backoffice_View_Helper_RenderMenu extends Zend_View_Helper_Abstract
         
         $menu = array();
         foreach ($navigation as $tab) {
-            if(isset($tab['controller'])){
-                if(isset($tab['action'])){
-                    $url = $baseUrl . '/' . $tab['controller'] . '/' . $tab['action'];
-                }else{
-                    $url = $baseUrl . '/' . $tab['controller'];
-                }
-                
-                if (isset($page['active']) && $page['active']){
-                    $tabLink = sprintf($this->_currentLinkTemplate, $url, $tab['label']);
-                } else {
-                    $tabLink = sprintf($this->_linkTemplate, $url, $tab['label']);
-                }
-            }else{
-                $tabLink = sprintf($this->_tabLinkTemplate, $tab['label']);
-            }
+            $tab = $tab['main'];
             
-            $links = array();
-            if(isset($tab['pages'])){
-                foreach($tab['pages'] as $page) {
-                    if(isset($page['action'])){
-                        $url = $baseUrl . '/' . $page['controller'] . '/' . $page['action'];
-                    }else{
-                        $url = $baseUrl . '/' . $page['controller'];
-                    }
-                    
-                    if (isset($page['active']) && $page['active']){
-                        $links[] = sprintf($this->_currentLinkTemplate, $url, $page['label']);
-                    } else {
-                        $links[] = sprintf($this->_linkTemplate, $url, $page['label']);
-                    }
-                }
+            if(isset($tab['action'])){
+                $url = $baseUrl . '/' . $tab['controller'] . '/' . $tab['action'];
+            }else{
+                $url = $baseUrl . '/' . $tab['controller'];
             }
             
             if (isset($tab['active']) && $tab['active']) {
-                $li = '<li class="current">' . PHP_EOL . $tabLink . PHP_EOL;
-                $li .= !empty($links)? '<ul>' . PHP_EOL . '<li>' . implode('</li>' . PHP_EOL . '<li>', $links) . '</li>' . PHP_EOL . '</ul>' : '';
-                $li .= '</li>';
+                $li = sprintf($this->_linkSelectedTemplate, $url, $tab['label']);
             } else {
-                $li = '<li>' . PHP_EOL . $tabLink . PHP_EOL;
-                $li .= !empty($links)? '<ul>' . PHP_EOL . '<li>' . implode('</li>' . PHP_EOL . '<li>', $links) . '</li>' . PHP_EOL . '</ul>' : '' ;
-                $li .= '</li>';
+                $li = sprintf($this->_linkTemplate, $url, $tab['label']);
             }
             
-            $menu []= $li;
+            $menu[] = $li;
         }
         
-        $xhtml = '<ul id="nav" class="sf-menu">' . PHP_EOL . implode(PHP_EOL, $menu) . PHP_EOL . '</ul>';
+        $xhtml = '<ul id="nav" class="prefix_1">' . PHP_EOL . implode(PHP_EOL, $menu) . PHP_EOL . '</ul>';
         
         return $xhtml;
     }

@@ -4,7 +4,7 @@
  *
  * @category App
  * @package App_FlagFlippers
- * @copyright Company
+ * @copyright company
  */
 
 /**
@@ -12,7 +12,10 @@
  */
 class App_FlagFlippers_Manager
 {
-    public static $indexKey = 'FlagFlippers';
+    public static $indexKey = 'companyFlagFlippers';
+    private static $_membersAllowedResources = array(
+        'backoffice-index',
+    );
     
     private static $_guestsAllowedResources = array(
         'backoffice-profile' => array('login'),
@@ -57,7 +60,7 @@ class App_FlagFlippers_Manager
      * @param string $resource 
      * @return boolean
      */
-    public function isAllowed($role = NULL, $resource = NULL, $action = NULL){
+    public static function isAllowed($role = NULL, $resource = NULL, $action = NULL){
         if(empty($role)){
             $user = BaseUser::getSession();
             $role = $user->group->name;
@@ -90,7 +93,7 @@ class App_FlagFlippers_Manager
      *
      * @return boolean
      */
-    private function _checkIfExist(){
+    private static function _checkIfExist(){
         return Zend_Registry::isRegistered(App_FlagFlippers_Manager::$indexKey);
     }
     
@@ -113,7 +116,7 @@ class App_FlagFlippers_Manager
      * @return Zend_Acl | boolean
      */
     private static function _getFromMemcache(){
-        $cacheHandler = Zend_Registry::get('Zend_Cache_Manager')->getCache('memcache');
+        $cacheHandler = App_DI_Container::get('CacheManager')->getCache('memcache');
         
         if($acl = $cacheHandler->load(App_FlagFlippers_Manager::$indexKey)){
             return $acl;
@@ -197,6 +200,11 @@ class App_FlagFlippers_Manager
             }
         }
         
+        //Hardcode basic paths for members
+        foreach(App_FlagFlippers_Manager::$_membersAllowedResources as $resource){
+            $aclObject->allow('members', $resource);
+        }
+        
         //Hardcode basic paths for guests
         foreach(App_FlagFlippers_Manager::$_guestsAllowedResources as $resource => $roles){
             if(!is_array($roles)){
@@ -232,7 +240,7 @@ class App_FlagFlippers_Manager
             throw new Exception('You must provide a valid Acl in order to store it');
         }
         
-        $cacheHandler = Zend_Registry::get('Zend_Cache_Manager')->getCache('memcache');
+        $cacheHandler = App_DI_Container::get('CacheManager')->getCache('memcache');
         
         $cacheHandler->save($acl, App_FlagFlippers_Manager::$indexKey);
     }

@@ -8,10 +8,11 @@
  * configuration
  *
  * @package   application
- * @copyright Company
+ * @copyright company
  */
 require_once 'App/Bootstrap/Abstract.php';
-class Bootstrap extends App_Bootstrap_Abstract {
+class Bootstrap extends App_Bootstrap_Abstract
+{
     
     /**
      * Resources to be bootstrapped first
@@ -21,8 +22,7 @@ class Bootstrap extends App_Bootstrap_Abstract {
      */
     protected $_first = array(
         'Autoloader',
-        'Environment',
-        'Config'
+        'Environment'
     );
     
     /**
@@ -42,7 +42,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initAutoloader() {
+    protected function _initAutoloader()
+    {
         require_once 'Zend/Loader/Autoloader.php';
         
         $loader = Zend_Loader_Autoloader::getInstance();
@@ -59,7 +60,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initEnvironment() {
+    protected function _initEnvironment()
+    {
         $file = APPLICATION_PATH . '/configs/environment.php';
         if (!is_readable($file)) {
             throw new Zend_Exception('Cannot find the environment.php file!');
@@ -76,31 +78,19 @@ class Bootstrap extends App_Bootstrap_Abstract {
     }
     
     /**
-     * Bootstraps the application's configuration by reading the content of the 
-     * configs/application.ini file, interpret it and saving the content in the Zend_Registry under 
-     * the 'config' key
-     * 
-     * @access protected
-     * @return void     
-     */
-    protected function _initConfig() {
-        $configuration = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', APPLICATION_ENV);
-        Zend_Registry::set('config', $configuration);
-    }
-    
-    /**
      * Store the app version in the registry
      *
      * @access protected
      * @return void
      */
-    protected function _initAppVersion(){
-        $configuration = Zend_Registry::get('config');
+    protected function _initAppVersion()
+    {
+        $configuration = App_DI_Container::get('ConfigObject');
         
         // Register the version of the app
         if (isset($configuration->release->version)) {
             define('APP_VERSION', $configuration->release->version);
-        }else{
+        } else {
             define('APP_VERSION', 'unknown');
         }
         
@@ -115,9 +105,11 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initModule() {
+    protected function _initModule()
+    {
         if (!defined('CURRENT_MODULE')) {
-            throw new Zend_Exception('The CURRENT_MODULE module constant is not defined! Please check the index.php file for this module.');
+            throw new Zend_Exception('The CURRENT_MODULE module constant is' .
+                ' not defined! Please check the index.php file for this module.');
         }
         
         $filename = APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/Bootstrap.php';
@@ -140,15 +132,18 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initModulePaths() {
+    protected function _initModulePaths()
+    {
         if (!defined('CURRENT_MODULE')) {
-            throw new Zend_Exception('The CURRENT_MODULE module constant is not defined! Please check the index.php file for this module.');
+            throw new Zend_Exception('The CURRENT_MODULE module constant is' .
+                ' not defined! Please check the index.php file for this module.');
         }
         
         $paths = array(
             APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/controllers',
             APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/forms',
             APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/models',
+            APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/tables',
             ROOT_PATH . '/library/App/Model',
             get_include_path() ,
         );
@@ -162,7 +157,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initFrontController() {
+    protected function _initFrontController()
+    {
         $front = Zend_Controller_Front::getInstance();
         
         $front->addModuleDirectory(APPLICATION_PATH . '/modules');
@@ -173,14 +169,17 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * Initializes the database connection
      * 
      * @access protected
-     * @return void     
+     * @return void
      */
-    protected function _initDb() {
-        $config = Zend_Registry::get('config');
+    protected function _initDb()
+    {
+        $config = App_DI_Container::get('ConfigObject');
         
         $dbAdapter = Zend_Db::factory($config->resources->db);
         Zend_Db_Table_Abstract::setDefaultAdapter($dbAdapter);
         Zend_Registry::set('dbAdapter', $dbAdapter);
+        
+        Zend_Db_Table_Abstract::setDefaultMetadataCache(App_DI_Container::get('CacheManager')->getCache('memcache'));
     }
     
     /**
@@ -189,15 +188,14 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initViewHelpers() {
+    protected function _initViewHelpers()
+    {
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
         if (NULL === $viewRenderer->view) {
             $viewRenderer->initView();
         }
         
         $viewRenderer->view->addHelperPath('App/View/Helper', 'App_View_Helper');
-        $viewRenderer->view->addHelperPath('App/Frontend/View/Helper', 'App_Frontend_View_Helper');
-        $viewRenderer->view->addHelperPath('App/Backoffice/View/Helper', 'App_Backoffice_View_Helper');
     }
     
     /**
@@ -205,7 +203,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      *
      * @return void
      */
-    protected function _initActionHelpers(){
+    protected function _initActionHelpers()
+    {
         // Add the possibility to log to Firebug. Example: $this->_helper->log('Message');
         Zend_Controller_Action_HelperBroker::addHelper(new App_Controller_Action_Helper_Logger());
         
@@ -218,7 +217,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      *
      * @return void
      */
-    protected function _initLocale(){
+    protected function _initLocale()
+    {
         $locale = new Zend_Locale();
         
         if (!Zend_Locale::isLocale($locale, TRUE, FALSE)) {
@@ -228,6 +228,9 @@ class Bootstrap extends App_Bootstrap_Abstract {
             
             $locale = new Zend_Locale($locale);
         }
+        
+        //Remove this!
+        $locale = new Zend_Locale('en_US');
         
         if ($locale instanceof Zend_Locale) {
             Zend_Registry::set('Zend_Locale', $locale);
@@ -240,10 +243,9 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void
      */
-    protected function _initLayout(){
+    protected function _initLayout()
+    {
         Zend_Layout::startMvc(APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/views/layouts/');
-        
-        $view = Zend_Layout::getMvcInstance()->getView();
     }
     
     /**
@@ -254,7 +256,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void     
      */
-    protected function _initViewPaths() {
+    protected function _initViewPaths()
+    {
         $this->bootstrap('Layout');
         
         $view = Zend_Layout::getMvcInstance()->getView();
@@ -263,6 +266,7 @@ class Bootstrap extends App_Bootstrap_Abstract {
         $view->addScriptPath(APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/views/forms/');
         $view->addScriptPath(APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/views/paginators/');
         $view->addScriptPath(APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/views/scripts/');
+        $view->addScriptPath(ROOT_PATH . '/library/App/Mail/Templates/');
     }
     
     /**
@@ -270,38 +274,40 @@ class Bootstrap extends App_Bootstrap_Abstract {
      *
      * @return void
      */
-    protected function _initZFDebug(){
-        $this->bootstrap('Cache');
+    protected function _initZFDebug()
+    {
+        $config = App_DI_Container::get('ConfigObject');
         
-        $config = Zend_Registry::get('config');
+        $dbAdapter = Zend_Registry::get('dbAdapter');
         
-        if(isset($config->zfdebug->enabled) && $config->zfdebug->enabled == TRUE){
-            $dbAdapter = Zend_Registry::get('dbAdapter');
+        $options = array(
+            'plugins' => array(
+                'Variables',
+                'Html',
+                'Database' => array('adapter' => array('default' => $dbAdapter)),
+                'File' => array('basePath' => ROOT_PATH),
+                'Memory',
+                'Time',
+                'Registry',
+                'Exception'
+            )
+        );
+        
+        if ($config->zfdebug->show_cache_panel) {
+            $fileCache = App_DI_Container::get('CacheManager')->getCache('file');
+            $memcacheCache = App_DI_Container::get('CacheManager')->getCache('memcache');
             
-            $options = array(
-                'plugins' => array(
-                    'Variables',
-                    'Html',
-                    'Database' => array('adapter' => array('standard' => $dbAdapter)),
-                    'File' => array('basePath' => ROOT_DIR),
-                    'Memory',
-                    'Time',
-                    'Registry',
-                    'Exception'
+            $options['plugins']['Cache'] = array(
+                'backend' => array(
+                    $fileCache->getBackend(), 
+                    $memcacheCache->getBackend()
                 )
             );
-            
-            if($config->zfdebug->show_cache_panel){
-                $fileCache = Zend_Registry::get('Zend_Cache_Manager')->getCache('file');
-                $memcacheCache = Zend_Registry::get('Zend_Cache_Manager')->getCache('memcache');
-                
-                $options['plugins']['Cache'] = array('backend' => array($fileCache->getBackend(), $memcacheCache->getBackend()));
-            }
-            
-            $debug = new ZFDebug_Controller_Plugin_Debug($options);
-            
-            $frontController = Zend_Controller_Front::getInstance()->registerPlugin($debug);
         }
+        
+        $debug = new ZFDebug_Controller_Plugin_Debug($options);
+        
+        $frontController = Zend_Controller_Front::getInstance()->registerPlugin($debug);
     }
     
     /**
@@ -310,7 +316,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access protected
      * @return void
      */
-    protected function _initPlugins(){
+    protected function _initPlugins()
+    {
         $frontController = Zend_Controller_Front::getInstance();
         
         // Application_Plugin_VersionHeader sends a X-SF header with the system version for debugging
@@ -318,44 +325,63 @@ class Bootstrap extends App_Bootstrap_Abstract {
     }
     
     /**
-     * Initialize the caching mechanism
-     * 
-     * @access protected
+     * Initialize the routes
+     *
      * @return void
      */
-    protected function _initCache(){
-        $manager = new Zend_Cache_Manager();
+    protected function _initRouter(){
+        $router = new Zend_Controller_Router_Rewrite();
         
-        //Add the templates to the manager
-        foreach(Zend_Registry::get('config')->cache->toArray() as $k => $v){
-            $manager->setCacheTemplate($k, $v);
-        }
+        $routes = new Zend_Config_Xml(APPLICATION_PATH . '/configs/' . CURRENT_MODULE . '_routes.xml');
+        $router->addConfig($routes);
         
-        Zend_Registry::set('Zend_Cache_Manager', $manager);
+        $front = Zend_Controller_Front::getInstance();
+        $front->setRouter($router);
+        
+        Zend_Registry::set('Router', $router);
     }
     
     /**
-     * Initialize the log system
+     * Initialize the translation system
      *
-     * @access protected
      * @return void
      */
-    protected function _initLog(){
-        if(!file_exists(realpath(APPLICATION_PATH . '/../logs/ ' . CURRENT_MODULE . '/general.log'))){
-            $fh = fopen(APPLICATION_PATH . '/../logs/' . CURRENT_MODULE . '/general.log', 'w');
-            fclose($fh);
+    protected function _initTranslator(){
+        $this->bootstrap('Locale');
+        
+        //Extract some info from the request
+        $lang = Zend_Registry::get('Zend_Locale')->getLanguage();
+        $translationFile = ROOT_PATH . '/library/App/Translations/' . $lang . '.mo';
+
+        //Check if the translations file is available, if not fallback default to english
+        if(!file_exists($translationFile)){
+            $translationFile = APPLICATION_PATH . '/modules/' . CURRENT_MODULE . '/translations/en.mo';
         }
-        
-        $path = realpath(APPLICATION_PATH . '/../logs/' . CURRENT_MODULE . '/general.log');
-        $writer = new Zend_Log_Writer_Stream($path);
-        $logger = new Zend_Log($writer);
-        
-        if(!Zend_Registry::get('IS_PRODUCTION')){
-            $firebug_writer = new Zend_Log_Writer_Firebug();
-            $logger->addWriter($firebug_writer);
+
+        $options = array(
+                'adapter' => 'gettext',
+                'content' => $translationFile,
+                'locale'  => $lang,
+                'disableNotices' => App_DI_Container::get('ConfigObject')->translations->disable_notices,
+                'logMessage' => "Missing translation: %message%",
+                'logUntranslated' => App_DI_Container::get('ConfigObject')->translations->log_missing_translations
+        );
+
+        //Create a zend_log for missing translations
+        if(App_DI_Container::get('ConfigObject')->translations->log_missing_translations){
+            $pathLog = ROOT_PATH . '/logs/' . CURRENT_MODULE . '/missing_translations/' . date('Ymd') . '_' . $lang . '.log';
+            $writer = new Zend_Log_Writer_Stream($pathLog);
+            $logger = new Zend_Log($writer);
+            
+            $options['log'] = $logger;
         }
+
+        $translate = new Zend_Translate($options);
         
-        Zend_Registry::set('Zend_Log', $logger);
+        Zend_Registry::set('Zend_Translate', $translate);
+        
+        Zend_Validate_Abstract::setDefaultTranslator($translate);
+        Zend_Form::setDefaultTranslator($translate);
     }
     
     /**
@@ -363,75 +389,20 @@ class Bootstrap extends App_Bootstrap_Abstract {
      *
      * @return void
      */
-    protected function _initFlagFlippers(){
+    protected function _initFlagFlippers()
+    {
         $this->bootstrap('ModulePaths');
         
+        $path = realpath(APPLICATION_PATH . '/../logs/' . CURRENT_MODULE . '/flagflippers.log');
+        $logger = new Zend_Log(new Zend_Log_Writer_Stream($path));
+        
+        if (!Zend_Registry::get('IS_PRODUCTION')) {
+            $logger->addWriter(new Zend_Log_Writer_Firebug());
+        }
+        
+        Zend_Registry::set('Zend_Log_FlagFlippers', $logger);
+        
         App_FlagFlippers_Manager::load();
-    }
-    
-    /**
-     * Inits the Amazon CloudFront Invalidator
-     *
-     * @return void
-     */
-    protected function _initCloudFront(){
-        $config = Zend_Registry::get('config');
-        
-        if($config->amazon->cloudfront->enabled){
-            $cloudFrontConfig = array(
-                'accessKey' => $config->amazon->aws_access_key,
-                'privateKey' => $config->amazon->aws_private_key,
-                'distributionId' => $config->amazon->cloudfront->distribution_id,
-            );
-            
-            $cloudFront = new App_Amazon_CloudFront($cloudFrontConfig);
-            Zend_Registry::set('CloudFront', $cloudFront);
-        }
-    }
-    
-    /**
-     * Initialize the S3 Storage Engine
-     *
-     * @return void
-     */
-    protected function _initS3Storage(){
-        $config = Zend_Registry::get('config');
-        
-        if($config->amazon->s3->enabled){
-            $storage = Zend_Cloud_StorageService_Factory::getAdapter(array(
-                Zend_Cloud_StorageService_Factory::STORAGE_ADAPTER_KEY => 'Zend_Cloud_StorageService_Adapter_S3',
-                Zend_Cloud_StorageService_Adapter_S3::AWS_ACCESS_KEY => $config->amazon->aws_access_key,
-                Zend_Cloud_StorageService_Adapter_S3::AWS_SECRET_KEY => $config->amazon->aws_private_key,
-            ));
-            
-            Zend_Registry::set('S3StorageEngine', $storage);
-        }
-    }
-    
-    /**
-     * Inits the Amazon SNS Topics
-     *
-     * @return void
-     */
-    protected function _initSNSTopics(){
-        $config = Zend_Registry::get('config');
-        
-        if($config->amazon->sns->enabled){
-            $snsConfig = array(
-                'accessKey' => $config->amazon->aws_access_key,
-                'privateKey' => $config->amazon->aws_private_key,
-                'host' => $config->amazon->sns->host,
-            );
-            
-            $topics = $config->amazon->sns->topics;
-            
-            foreach($topics as $topic){
-                $snsConfig['topicArn'] = $topic->arn;
-                
-                $sns = new App_Amazon_SNS_Topic($snsConfig);
-                Zend_Registry::set($topic->key, $sns);
-            }
-        }
     }
     
     /**
@@ -440,7 +411,8 @@ class Bootstrap extends App_Bootstrap_Abstract {
      * @access public
      * @return void  
      */
-    public function runApp() {
+    public function runApp()
+    {
         $front = Zend_Controller_Front::getInstance();
         $front->dispatch();
     }

@@ -5,7 +5,7 @@
  * @category public
  * @package public
  * @subpackage public_backend
- * @copyright Company
+ * @copyright company
  */
 
 // holds the name of the current module

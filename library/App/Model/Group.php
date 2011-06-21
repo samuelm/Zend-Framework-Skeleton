@@ -3,7 +3,7 @@
  * Manages the user groups in the application
  *
  * @package backoffice_models
- * @copyright Company
+ * @copyright company
  */
 
 class Group extends App_Model
@@ -150,7 +150,8 @@ class Group extends App_Model
      * @return void
      */
     protected function _select(){
-        $select = $this->select();
+        $select = parent::select();
+        $select->setIntegrityCheck(FALSE);
         $select->from(array('g' => $this->_name));
         $select->joinLeft(array('t' => $this->_name), 'g.parent_id = t.id');
         $select->order('g.parent_id ASC');

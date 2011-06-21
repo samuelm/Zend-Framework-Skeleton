@@ -1,7 +1,7 @@
 <?php
 /**
  * Environment configuration
- * Copy this file to APPLICATION_PATH/configs/environment.php to define 
+ * Copy this file to APPLICATION_PATH/config/environment.php to define 
  * the working environment.
  *
  * Posibile values are:
@@ -32,7 +32,7 @@
  * Available Zend_Registry keys are IS_PRODUCTION, IS_STAGING, IS_DEVELOPMENT
  *
  * @package application_config
- * @copyright Company
+ * @copyright company
  */
 
 define('APP_STATE_PRODUCTION', 'production');

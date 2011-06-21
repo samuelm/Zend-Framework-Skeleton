@@ -4,7 +4,7 @@
  *
  * @category App
  * @package App_Backoffice
- * @copyright Company
+ * @copyright company
  */
 
 abstract class App_Backoffice_Form extends App_Form
@@ -26,7 +26,7 @@ abstract class App_Backoffice_Form extends App_Form
     public function init(){
         parent::init();
         
-        $config = Zend_Registry::get('config');
+        $config = App_DI_Container::get('ConfigObject');
         
         // add an anti-CSRF token to all forms
         $csrfHash = new Zend_Form_Element_Hash('csrfhash');

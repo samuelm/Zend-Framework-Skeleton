@@ -3,42 +3,41 @@ window.onload = function(){
     if (ZFDebugLoad) {
         ZFDebugLoad();
     }
-    jQuery.noConflict();
 };
 
 function ZFDebugPanel(name) {
-    jQuery(".ZFDebug_panel").each(function(i){
-        if(jQuery(this).css("display") == "block") {
-            jQuery(this).slideUp();
+    $(".ZFDebug_panel").each(function(i){
+        if($(this).css("display") == "block") {
+            $(this).slideUp();
         } else {
-            if (jQuery(this).attr("id") == name)
-                jQuery(this).slideDown();
+            if ($(this).attr("id") == name)
+                $(this).slideDown();
             else
-                jQuery(this).slideUp();
+                $(this).slideUp();
         }
     });
 }
 
 function ZFDebugSlideBar() {
-    if (jQuery("#ZFDebug_debug").position().left > 0) {
+    if ($("#ZFDebug_debug").position().left > 0) {
         document.cookie = "ZFDebugCollapsed=1;expires=;path=/";
         ZFDebugPanel();
-        jQuery("#ZFDebug_toggler").html("&#187;");
-        return jQuery("#ZFDebug_debug").animate({left:"-"+parseInt(jQuery("#ZFDebug_debug").outerWidth()-jQuery("#ZFDebug_toggler").outerWidth()+1)+"px"}, "normal", "swing");
+        $("#ZFDebug_toggler").html("&#187;");
+        return $("#ZFDebug_debug").animate({left:"-"+parseInt($("#ZFDebug_debug").outerWidth()-$("#ZFDebug_toggler").outerWidth()+1)+"px"}, "normal", "swing");
     } else {
         document.cookie = "ZFDebugCollapsed=0;expires=;path=/";
-        jQuery("#ZFDebug_toggler").html("&#171;");
-        return jQuery("#ZFDebug_debug").animate({left:"1px"}, "normal", "swing");
+        $("#ZFDebug_toggler").html("&#171;");
+        return $("#ZFDebug_debug").animate({left:"1px"}, "normal", "swing");
     }
 }
 
 function ZFDebugToggleElement(name, whenHidden, whenVisible){
-    if(jQuery(name).css("display")=="none"){
-        jQuery(whenVisible).show();
-        jQuery(whenHidden).hide();
+    if($(name).css("display")=="none"){
+        $(whenVisible).show();
+        $(whenHidden).hide();
     } else {
-        jQuery(whenVisible).hide();
-        jQuery(whenHidden).show();
+        $(whenVisible).hide();
+        $(whenHidden).show();
     }
-    jQuery(name).slideToggle();
+    $(name).slideToggle();
 }

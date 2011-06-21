@@ -6,13 +6,13 @@
  * @category   App
  * @package    App_View
  * @subpackage Helper
- * @copyright  Company
+ * @copyright  company
  */
 
 /**
  * Translation view helper (just a shortcut for translate)
  */
-class App_Backoffice_View_Helper_EasterEgg extends Zend_View_Helper_Abstract {
+class App_View_Helper_EasterEgg extends Zend_View_Helper_Abstract {
     private $_emoticons = array(
         array(
             'emoticon' => '(.V.)',

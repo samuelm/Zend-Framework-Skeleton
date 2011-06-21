@@ -3,57 +3,70 @@
  * Default layout, used to render most parts of the application
  *
  * @package frontend_layouts
- * @copyright Company
+ * @copyright company
  */
 
 //Configure the title
 $this->headTitle()->setSeparator(' - ');
-$this->headTitle('Company');
-
-//Add generic scripts
-$this->headScript()->appendFile($this->baseUrl() . '/js/jquery.min.js');
-$this->headScript()->appendFile($this->baseUrl() . '/js/ddpng.js');
+$this->headTitle('company');
 
 //Add generic CSS files
-$this->headLink()->appendStylesheet($this->baseUrl() . '/css/main.css');
+$this->headLink()->appendStylesheet($this->baseUrl() . '/css/master.css');
+$this->headLink()->appendStylesheet($this->baseUrl() . '/css/jquery-ui.css');
 
 //Add the ZFDebug Toolbar only if enabled in app.ini
-if(Zend_Registry::get('config')->zfdebug->enabled){
+if(Zend_Controller_Front::getInstance()->hasPlugin('ZFDebug_Controller_Plugin_Debug')){
     $this->headScript()->appendFile($this->baseUrl() . '/js/zfdebug.js');
     $this->headLink()->appendStylesheet($this->baseUrl() . '/css/zfdebug.css');
 }
-?>
 
+//Autoload js files
+$this->AutoloadResources();
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
+    <meta http-equiv="content-style-type" content="text/css" /> 
+    <meta http-equiv="content-script-type" content="text/javascript" />
+    
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    
+    <link rel="shortcut icon" type="image/ico" href="/images/favicon.png" />
     
     <?php echo $this->headTitle() . PHP_EOL;?>
     <?php echo $this->headLink() . PHP_EOL;?>
     
-    <!-- Adding support for transparent PNGs in IE6: --> 
-    <!--[if lte IE 6]>
-        <script type="text/javascript" src="<?php echo $this->baseUrl();?>/js/ddpng.js"></script>
-        <script type="text/javascript">
-            DD_belatedPNG.fix('.png');
-        </script>
-    <![endif]-->
+    <!--[if lte IE 7]>
+        <link href="/css/ie7.css" media="screen" rel="stylesheet" type="text/css" >
+    <![endif]--> 
     
-    <!-- add the js files -->
-    <?php echo $this->headScript() . PHP_EOL;?>
+    
 </head>
 <body>
     <div id="page">
         <div id="header">
-            <?php echo $this->partial('partials/header.phtml'); ?>
+            <div class="wrapper">
+                <?php echo $this->partial('partials/header.phtml'); ?>
+            </div>
         </div>
-        
-        <?php echo $this->layout()->content;?>
-        
+        <div id="content">
+            <div class="wrapper">
+                <?php echo $this->flashMessenger();?>
+                <?php echo $this->layout()->content;?>
+            </div>
+        </div>
         <div id="footer">
-            <?php echo $this->partial('partials/footer.phtml'); ?>
+            <div class="wrapper">
+                <?php echo $this->partial('partials/footer.phtml'); ?>
+            </div>
         </div>
     </div>
+    <!-- add the js files -->
+    <?php echo $this->headScript() . PHP_EOL;?>
+    <?php if(Zend_Registry::get('IS_PRODUCTION')) : ?>
+        <?php echo $this->partial('partials/ga.phtml'); ?>
+    <?php endif; ?>
 </body>
 </html>

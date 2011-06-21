@@ -3,7 +3,7 @@
  * Set a special header to send the app version
  *
  * @package App_Plugin
- * @copyright Company
+ * @copyright company
  */
  
 /**

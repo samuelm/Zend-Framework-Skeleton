@@ -1,10 +1,8 @@
 <?php
 /**
- * Amazon SNS Topic
+ * Amazon CloudFront
  * 
- * Allows creating of new topics, deleting, setting the display name and publishing to existing topics
- * 
- * @author Russell Smith <russell.smith@ukd1.co.uk>
+ * Allows invalidation requests on files
  */
 class App_Amazon_CloudFront {
     private $_accessKey = '';
