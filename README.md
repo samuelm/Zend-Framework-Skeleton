@@ -16,7 +16,7 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * VersionHeader plugin installed (send the version of the app through a special header)
 * DBAdapter already configured (just change the credentials on the app.ini)
 * Cache Backends configurable through app.ini
-* Memcache and file cache backends configured
+* File cache backend configured
 * Automatic CSRF check in all the forms
 * Autoloader configured
 * Router configured to read the routes from xml files
@@ -64,7 +64,6 @@ Password: lorem
 Installation
 ============
 
-0. You have to have a memcached server and the memcache php extension installed
 1. Get a copy of the files in your machine
 2. Run the install script located at ./scripts
 3. Create the virtual hosts (one per module)

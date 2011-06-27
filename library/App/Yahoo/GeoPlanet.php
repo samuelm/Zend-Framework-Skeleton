@@ -52,7 +52,7 @@ class App_Yahoo_GeoPlanet
      **/
     private static function _performRequest($url)
     {
-        $cache = App_DI_Container::get('CacheManager')->getCache('memcache');
+        $cache = App_DI_Container::get('CacheManager')->getCache('default');
         
         if(($result = $cache->load(sha1($url))) === FALSE){
             $client = new Zend_Http_Client($url);

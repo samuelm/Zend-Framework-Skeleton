@@ -179,7 +179,7 @@ class Bootstrap extends App_Bootstrap_Abstract
         Zend_Db_Table_Abstract::setDefaultAdapter($dbAdapter);
         Zend_Registry::set('dbAdapter', $dbAdapter);
         
-        Zend_Db_Table_Abstract::setDefaultMetadataCache(App_DI_Container::get('CacheManager')->getCache('memcache'));
+        Zend_Db_Table_Abstract::setDefaultMetadataCache(App_DI_Container::get('CacheManager')->getCache('default'));
     }
     
     /**
@@ -294,13 +294,11 @@ class Bootstrap extends App_Bootstrap_Abstract
         );
         
         if ($config->zfdebug->show_cache_panel) {
-            $fileCache = App_DI_Container::get('CacheManager')->getCache('file');
-            $memcacheCache = App_DI_Container::get('CacheManager')->getCache('memcache');
+            $defaultCache = App_DI_Container::get('CacheManager')->getCache('default');
             
             $options['plugins']['Cache'] = array(
                 'backend' => array(
-                    $fileCache->getBackend(), 
-                    $memcacheCache->getBackend()
+                    $defaultCache->getBackend(),
                 )
             );
         }

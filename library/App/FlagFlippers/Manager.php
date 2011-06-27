@@ -25,17 +25,17 @@ class App_FlagFlippers_Manager
      * Load the ACL to the Registry if is not there
      * 
      * This function takes care about generating the acl from the db
-     * if the info is not in the registry and/or memcache.
+     * if the info is not in the registry and/or cache.
      * 
-     * If the acl is inside memcache we load it from there.
+     * If the acl is inside the cache we load it from there.
      * 
      * @return void
      */
     public static function load(){
         if(!App_FlagFlippers_Manager::_checkIfExist()){
-            if(!$acl = App_FlagFlippers_Manager::_getFromMemcache()){
+            if(!$acl = App_FlagFlippers_Manager::_getFromCache()){
                 $acl = App_FlagFlippers_Manager::_generateFromDb();
-                App_FlagFlippers_Manager::_storeInMemcache($acl);
+                App_FlagFlippers_Manager::_storeInCache($acl);
             }
             
             App_FlagFlippers_Manager::_storeInRegistry($acl);
@@ -43,13 +43,13 @@ class App_FlagFlippers_Manager
     }
     
     /**
-     * Regenerate the Acl from the DB and update memcache and Zend_Registry
+     * Regenerate the Acl from the DB and update the cache and Zend_Registry
      *
      * @return boolean
      */
     public static function save(){
         $acl = App_FlagFlippers_Manager::_generateFromDb();
-        App_FlagFlippers_Manager::_storeInMemcache($acl);
+        App_FlagFlippers_Manager::_storeInCache($acl);
         App_FlagFlippers_Manager::_storeInRegistry($acl);
     }
     
@@ -111,12 +111,12 @@ class App_FlagFlippers_Manager
     }
     
     /**
-     * Retrieve the acl from memcache
+     * Retrieve the acl from the cache
      *
      * @return Zend_Acl | boolean
      */
-    private static function _getFromMemcache(){
-        $cacheHandler = App_DI_Container::get('CacheManager')->getCache('memcache');
+    private static function _getFromCache(){
+        $cacheHandler = App_DI_Container::get('CacheManager')->getCache('default');
         
         if($acl = $cacheHandler->load(App_FlagFlippers_Manager::$indexKey)){
             return $acl;
@@ -227,11 +227,11 @@ class App_FlagFlippers_Manager
     }
     
     /**
-     * Store the Acl in memcache
+     * Store the Acl in the cache
      *
      * @return void
      */
-    private static function _storeInMemcache($acl = NULL){
+    private static function _storeInCache($acl = NULL){
         if(is_null($acl) && App_FlagFlippers_Manager::_checkIfExist()){
             $acl = App_FlagFlippers_Manager::_getFromRegistry();
         }
@@ -240,7 +240,7 @@ class App_FlagFlippers_Manager
             throw new Exception('You must provide a valid Acl in order to store it');
         }
         
-        $cacheHandler = App_DI_Container::get('CacheManager')->getCache('memcache');
+        $cacheHandler = App_DI_Container::get('CacheManager')->getCache('default');
         
         $cacheHandler->save($acl, App_FlagFlippers_Manager::$indexKey);
     }
