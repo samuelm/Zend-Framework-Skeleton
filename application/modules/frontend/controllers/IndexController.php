@@ -30,6 +30,7 @@ class IndexController extends App_Frontend_Controller
      */
     public function indexAction()
     {
+        App_Logger::log('test');
     }
     
     /**

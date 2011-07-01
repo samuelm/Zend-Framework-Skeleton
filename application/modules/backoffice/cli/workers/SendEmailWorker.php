@@ -84,11 +84,13 @@ function send_email($job){
     $config = getConfig();
     
     $mail = new Zend_Mail('utf-8');
-    $transport = new App_Mail_Transport_AmazonSES(
-        array(
+
+    if($config->system->email_system->send_by_amazon_ses){
+        $transport = new App_Mail_Transport_AmazonSES(array(
             'accessKey' => $config->amazon->aws_access_key,
             'privateKey' => $config->amazon->aws_private_key
-    ));
+        ));   
+    }
     
     if(array_key_exists('text', $workload)){
         $mail->setBodyText($workload['text']);
@@ -122,26 +124,10 @@ function send_email($job){
     $gearmanClient->setFailCallback('taskFailed');
     
     try{
-        $mail->send($transport);
-        //$mail->send();
-        
-        //Track the email delivery
-        //Add the bounce to the statistics
-        $gearmanClient->addTask('analytics', serialize(array($config->analytics->mail->domain, sha1(uniqid(time(), TRUE)), array(
-            'trackingId' => $workload['trackingId'],
-            'timestamp' => time(),
-            'namespace' => 'delivery',
-            'email' => $workload['to'],
-            'type' => $workload['type'],
-            'campaign' => $workload['campaign']
-        ))));
-        
-        //Run the tasks
-        if(!$gearmanClient->runTasks()){
-            logError(sprintf("%s: Error storing the delivery event of the email\n\n", date('r')));
-            $job->sendFail();
-            
-            return FALSE;
+        if(isset($transport) && $transport instanceOf App_Mail_Transport_AmazonSES){
+            $mail->send($transport);
+        }else{
+            $mail->send();
         }
         
         //Some status info
