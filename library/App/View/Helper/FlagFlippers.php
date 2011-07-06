@@ -18,9 +18,10 @@ class App_View_Helper_FlagFlippers extends Zend_View_Helper_Abstract{
      *
      * @param string $role
      * @param string $resource
+     * @param string $privilege
      * @return boolean
      */
-    public function flagFlippers($role, $resource) {
-        return App_FlagFlippers_Manager::isAllowed($role, $resource);
+    public function flagFlippers($role, $resource, $privilege) {
+        return App_FlagFlippers_Manager::isAllowed($role, $resource, $privilege);
     }
 }
