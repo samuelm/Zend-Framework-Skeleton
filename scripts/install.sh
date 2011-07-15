@@ -18,18 +18,36 @@ else
 fi
 
 # Create a few folders
-echo "- Creating log folder"
-mkdir "${prefix}logs"
-mkdir "${prefix}logs/backoffice"
-mkdir "${prefix}logs/backoffice/missing_translations"
-mkdir "${prefix}logs/frontend"
-mkdir "${prefix}logs/frontend/missing_translations"
+echo "- Creating log folders"
+if [ ! -d "${prefix}logs" ]; then
+    mkdir "${prefix}logs"
+fi
+
+if [ ! -d "${prefix}logs/backoffice" ]; then
+    mkdir "${prefix}logs/backoffice"
+fi
+
+if [ ! -d "${prefix}logs/backoffice/missing_translations" ]; then
+    mkdir "${prefix}logs/backoffice/missing_translations"
+fi
+
+if [ ! -d "${prefix}logs/frontend" ]; then
+    mkdir "${prefix}logs/frontend"
+fi
+
+if [ ! -d "${prefix}logs/frontend/missing_translations" ]; then
+    mkdir "${prefix}logs/frontend/missing_translations"
+fi
 
 echo "- Creating cache folder"
-mkdir "${prefix}cache"
+if [ ! -d "${prefix}cache" ]; then
+    mkdir "${prefix}cache"
+fi
 
 echo "- Creating temporary folder"
-mkdir "${prefix}public/frontend/tmp"
+if [ ! -d "${prefix}public/frontend/tmp" ]; then
+    mkdir "${prefix}public/frontend/tmp"
+fi
 
 # Copy the config files
 echo "- Copying environment file"
@@ -40,17 +58,30 @@ cp -n "${prefix}application/configs/application.example.ini" "${prefix}applicati
 
 # Getting db parameters from the user
 echo "- Customizing config file"
-read -p "      Enter the database name: " dbName
-read -p "      Enter the database username: " dbUsername
+read -p "      Enter the database name [zfskel]: " dbName
+read -p "      Enter the database username [root]: " dbUsername
 read -p "      Enter the database password: " dbPassword
-read -p "      Enter the database host (ip or hostname): " dbHost
+read -p "      Enter the database host (ip or hostname) [localhost]: " dbHost
+
+# Setting default values
+if [ -z "$dbName" ]; then
+    dbName=zfskel
+fi
+
+if [ -z "$dbUsername" ]; then
+    dbUsername=root
+fi
+
+if [ -z "$dbHost" ]; then
+    dbHost=localhost
+fi
 
 # Modifying config file
 echo "- Modifying config file"
-sed -i -e "9s/.*/resources.db.params.dbname = \"$dbName\"/" ${prefix}application/configs/application.ini
-sed -i -e "10s/.*/resources.db.params.username = \"$dbUsername\"/" ${prefix}application/configs/application.ini
-sed -i -e "11s/.*/resources.db.params.password = \"$dbPassword\"/" ${prefix}application/configs/application.ini
-sed -i -e "12s/.*/resources.db.params.host = \"$dbHost\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "9s/.*/resources.db.params.dbname = \"$dbName\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "10s/.*/resources.db.params.username = \"$dbUsername\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "11s/.*/resources.db.params.password = \"$dbPassword\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "12s/.*/resources.db.params.host = \"$dbHost\"/" ${prefix}application/configs/application.ini
 
 # Create the log files
 echo "- Creating log files"
