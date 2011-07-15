@@ -57,11 +57,31 @@ echo "- Copying config file"
 cp -n "${prefix}application/configs/application.example.ini" "${prefix}application/configs/application.ini"
 
 # Getting db parameters from the user
-echo "- Customizing config file"
-read -p "      Enter the database name [zfskel]: " dbName
-read -p "      Enter the database username [root]: " dbUsername
-read -p "      Enter the database password: " dbPassword
-read -p "      Enter the database host (ip or hostname) [localhost]: " dbHost
+echo "- Customizing config file - Enter for default value"
+echo "   [DATABASE]"
+read -p "      Database name [zfskel]: " dbName
+read -p "      Database username [root]: " dbUsername
+read -p "      Database password: " dbPassword
+read -p "      Database host (ip or hostname) [localhost]: " dbHost
+
+# Getting security parameters from the user
+csrfSaltRandom=`md5 -qs $RANDOM`
+frontendSaltRandom=`md5 -qs $RANDOM`
+backofficeSaltRandom=`md5 -qs $RANDOM`
+
+echo "   [SECURITY]"
+read -p "      Salt for anti-CSRF tokens [$csrfSaltRandom]: " csrfSalt
+read -p "      Salt for the frontend passwords [$frontendSaltRandom]: " frontendSalt
+read -p "      Salt for the backoffice passwords [$backofficeSaltRandom]: " backofficeSalt
+
+# Getting the backoffice credentials
+backofficePasswordRandom=`md5 -qs $RANDOM | cut -c1-8`
+backofficeEmailRandom=${RANDOM}@mailinator.com
+
+echo "   [BACKOFFICE CREDENTIALS]"
+read -p "      Username [john.doe]: " backofficeUsername
+read -p "      Password [$backofficePasswordRandom]: " backofficePassword
+read -p "      Email [$backofficeEmailRandom]: " backofficeEmail
 
 # Setting default values
 if [ -z "$dbName" ]; then
@@ -76,12 +96,45 @@ if [ -z "$dbHost" ]; then
     dbHost=localhost
 fi
 
+if [ -z "$csrfSalt" ]; then
+    csrfSalt=$csrfSaltRandom
+fi
+
+if [ -z "$frontendSalt" ]; then
+    frontendSalt=$frontendSaltRandom
+fi
+
+if [ -z "$backofficeSalt" ]; then
+    backofficeSalt=$backofficeSaltRandom
+fi
+
+if [ -z "$backofficeUsername" ]; then
+    backofficeUsername=john.doe
+fi
+
+if [ -z "$backofficePassword" ]; then
+    backofficePassword=$backofficePasswordRandom
+fi
+
+if [ -z "$backofficeEmail" ]; then
+    backofficeEmail=$backofficeEmailRandom
+fi
+
 # Modifying config file
 echo "- Modifying config file"
 sed -i '' -e "9s/.*/resources.db.params.dbname = \"$dbName\"/" ${prefix}application/configs/application.ini
 sed -i '' -e "10s/.*/resources.db.params.username = \"$dbUsername\"/" ${prefix}application/configs/application.ini
 sed -i '' -e "11s/.*/resources.db.params.password = \"$dbPassword\"/" ${prefix}application/configs/application.ini
 sed -i '' -e "12s/.*/resources.db.params.host = \"$dbHost\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "19s/.*/security.csrfsalt = \"$csrfSalt\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "23s/.*/backoffice.security.passwordsalt = \"$backofficeSalt\"/" ${prefix}application/configs/application.ini
+sed -i '' -e "24s/.*/frontend.security.passwordsalt = \"$frontendSalt\"/" ${prefix}application/configs/application.ini
+
+# Modifying the migration file
+echo "- Writing the credentials migration"
+sed -i '' -e "12s/.*/         \$username = '$backofficeUsername';/" ${prefix}scripts/migrations/001-BackofficeUsers.php
+sed -i '' -e "13s/.*/         \$password = sha1('${backofficeSalt}${backofficePassword}');/" ${prefix}scripts/migrations/001-BackofficeUsers.php
+sed -i '' -e "14s/.*/         \$email = '$backofficeEmail';/" ${prefix}scripts/migrations/001-BackofficeUsers.php
 
 # Create the log files
 echo "- Creating log files"
