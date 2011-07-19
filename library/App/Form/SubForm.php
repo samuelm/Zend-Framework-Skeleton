@@ -2,7 +2,7 @@
 /**
  * Default parent form for all the subforms in the application
  *
- * @package Neo
+ * @package App_Form
  * @copyright company
  */
 
