@@ -54,7 +54,7 @@ class BackofficeUser extends BaseUser
      * @access public
      * @return int
      */
-    public function save($data){
+    public function save(array $data){
         $id = parent::save($data);
         if (isset($data['groups']) && is_array($data['groups']) && !empty($data['groups'])) {
             $groups = $data['groups'];
