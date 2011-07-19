@@ -121,7 +121,7 @@ class Group extends App_Model
      * @access public
      * @return array
      */
-    public function findPairs(){
+    public function findPairs($force = FALSE){
         $pairs = parent::findPairs();
         
         //Unset the guest group
