@@ -3,7 +3,7 @@
  * Various string utilities
  *
  * @category App
- * @package App
+ * @package App_Inflector
  * @copyright company
  */
 

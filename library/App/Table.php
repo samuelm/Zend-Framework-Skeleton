@@ -2,7 +2,6 @@
 /**
  * Default class for all db tables in the application
  *
- *
  * @category App
  * @package App_Table
  * @copyright company
