@@ -52,15 +52,18 @@ class App_Yahoo_GeoPlanet
      **/
     private static function _performRequest($url)
     {
-        $cache = App_DI_Container::get('CacheManager')->getCache('default');
+        $cache = App_DI_Container::get('CacheManager')->getCache('memcache');
         
         if(($result = $cache->load(sha1($url))) === FALSE){
             $client = new Zend_Http_Client($url);
             $client->setMethod(Zend_Http_Client::GET);
             $response = $client->request();
-            
+
             if($response->getStatus() == 200){
-                $cache->save($response->getBody(), sha1($url), array(), 86400);
+                $result = $response->getBody();
+                $cache->save($result, sha1($url), array(), 86400);
+            }else{
+                $result = FALSE;
             }
         }
         
