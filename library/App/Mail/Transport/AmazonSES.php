@@ -5,8 +5,8 @@
  *
  * Integration between Zend Framework and Amazon Simple Email Service
  *
- * @category    Zend
- * @package     Zend_Mail
+ * @category    App
+ * @package     App_Mail
  * @subpackage  Transport
  * @author      Christopher Valles <info@christophervalles.com>
  * @license     http://framework.zend.com/license/new-bsd New BSD License
