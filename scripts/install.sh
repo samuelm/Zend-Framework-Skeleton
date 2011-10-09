@@ -65,9 +65,17 @@ read -p "      Database password: " dbPassword
 read -p "      Database host (ip or hostname) [localhost]: " dbHost
 
 # Getting security parameters from the user
-csrfSaltRandom=`md5 -qs $RANDOM`
-frontendSaltRandom=`md5 -qs $RANDOM`
-backofficeSaltRandom=`md5 -qs $RANDOM`
+if [ -n "`which md5`" ]; then
+    md5Command=`which md5`
+elif [ -n "`which md5pass`" ]; then
+    md5Command=`which md5pass`
+else
+    read -p "Unable to find a utility to generate md5 hashes. Please specify the path to the md5 binary: " md5Command
+fi
+
+csrfSaltRandom=`$md5Command -qs $RANDOM`
+frontendSaltRandom=`$md5Command -qs $RANDOM`
+backofficeSaltRandom=`$md5Command -qs $RANDOM`
 
 echo "   [SECURITY]"
 read -p "      Salt for anti-CSRF tokens [$csrfSaltRandom]: " csrfSalt
