@@ -41,7 +41,7 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * Amazon Simple Email Service integrate through a custom mail transport
 * App_Logger attached to Amazon SES to receive notifications of the errors (based on zend_log and it's logs levels)
 * Implemented a dependency injector container and moved a lot of objects there
-* Integrated gearmand and some workers to do jobs asynchronously
+* Integrated gearmand and some workers to do jobs asynchronously (optional and configurable through config file)
 * Analytics worker to send info to Amazon Simple DB
 * Upload worker to upload files to Amazon S3
 * Remove cdn worker to invalidate files on Amazon CloudFront
