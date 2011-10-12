@@ -51,6 +51,8 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * Bitly Short Url service integrated
 * Custom logic to handle emails and their templates
 * Install script
+* Added ZendX and configured to use local version of jQuery and jQuery UI
+* Added the official Zend unit tests
 
 
 Credentials to access the BO
