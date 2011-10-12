@@ -107,12 +107,30 @@ else
 fi
 
 # Getting the backoffice credentials
-backofficePasswordRandom=`md5 -qs $RANDOM | cut -c1-8`
-backofficeEmailRandom=${RANDOM}@mailinator.com
-
 echo "   [BACKOFFICE CREDENTIALS]"
 read -p "      Username [john.doe]: " backofficeUsername
-read -p "      Password [$backofficePasswordRandom]: " backofficePassword
+
+if [ -n "`which md5`" -o -n "`which md5sum`" ]; then
+    if [ -n "`which md5`" ]; then
+        backofficePasswordRandom=`md5 -qs $RANDOM | cut -c1-8`
+    fi
+    
+    if [ -n "`which md5sum`" ]; then
+        backofficePasswordRandom=`echo $RANDOM | md5sum | cut -d' ' -f1 | cut -c1-8`
+    fi
+    
+    read -p "      Password [$backofficePasswordRandom]: " backofficePassword
+    
+else
+    echo "Unable to find a utility to generate md5 hashes."
+    
+    while [ -z "$backofficePasswordRandom" ]
+    do
+        read -p "      Specify a new password: " backofficePassword
+    done
+fi
+
+backofficeEmailRandom=${RANDOM}@mailinator.com
 read -p "      Email [$backofficeEmailRandom]: " backofficeEmail
 
 # Setting default values
@@ -185,6 +203,6 @@ chmod -R 777 "${prefix}cache"
 
 # Run the migrations
 echo "- Running the DB migrations"
-${prefix}bin/zf.sh update database-schema
+${prefix}bin/zfs.sh update database-schema
 
 echo -e "\nInstallation finished"

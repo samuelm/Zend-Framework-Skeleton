@@ -196,6 +196,7 @@ class Bootstrap extends App_Bootstrap_Abstract
         }
         
         $viewRenderer->view->addHelperPath('App/View/Helper', 'App_View_Helper');
+        $viewRenderer->view->addHelperPath('ZendX/JQuery/View/Helper', 'ZendX_JQuery_View_Helper');
     }
     
     /**
@@ -401,6 +402,19 @@ class Bootstrap extends App_Bootstrap_Abstract
         Zend_Registry::set('Zend_Log_FlagFlippers', $logger);
         
         App_FlagFlippers_Manager::load();
+    }
+    
+    /**
+     * Initialize and configure the jQuery options
+     *
+     * @return void
+     */
+    protected function _initJQuery()
+    {
+        $view = Zend_Layout::getMvcInstance()->getView();
+        $view->jQuery()->addStylesheet('/css/jquery-ui.css');
+        $view->jQuery()->setLocalPath('/js/jquery.min.js');
+        $view->jQuery()->setUiLocalPath('/js/jquery-ui.min.js');
     }
     
     /**

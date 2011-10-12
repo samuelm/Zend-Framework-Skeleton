@@ -81,7 +81,7 @@ class Zend_Service_Amazon_SimpleDb_Page
      */
     public function isLast()
     {
-        return empty($this->_token);
+        return (null === $this->_token);
     }
 
     /**

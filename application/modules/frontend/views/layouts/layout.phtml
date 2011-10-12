@@ -12,7 +12,6 @@ $this->headTitle('company');
 
 //Add generic CSS files
 $this->headLink()->appendStylesheet($this->baseUrl() . '/css/master.css');
-$this->headLink()->appendStylesheet($this->baseUrl() . '/css/jquery-ui.css');
 
 //Add the ZFDebug Toolbar only if enabled in app.ini
 if(Zend_Controller_Front::getInstance()->hasPlugin('ZFDebug_Controller_Plugin_Debug')){
@@ -65,6 +64,7 @@ $this->AutoloadResources();
     </div>
     <!-- add the js files -->
     <?php echo $this->headScript() . PHP_EOL;?>
+    <?php echo $this->jQuery() . PHP_EOL; ?>
     <?php if(Zend_Registry::get('IS_PRODUCTION')) : ?>
         <?php echo $this->partial('partials/ga.phtml'); ?>
     <?php endif; ?>
