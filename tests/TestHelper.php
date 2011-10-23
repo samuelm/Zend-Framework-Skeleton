@@ -50,6 +50,12 @@ $zfCoreLibrary = "$zfRoot/library";
 $zfCoreTests   = "$zfRoot/tests";
 
 /*
+ * Set few constants needed on the tests
+ */
+define('APPLICATION_ENV', 'development');
+define('APPLICATION_PATH', "$zfRoot/application");
+
+/*
  * Prepend the Zend Framework library/ and tests/ directories to the
  * include_path. This allows the tests to run out of the box and helps prevent
  * loading other copies of the framework code and tests that would supersede
