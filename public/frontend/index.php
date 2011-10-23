@@ -8,7 +8,6 @@
  * @copyright company
  */
 
-
 // holds the name of the current module
 define('CURRENT_MODULE', 'frontend');
 

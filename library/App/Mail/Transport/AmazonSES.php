@@ -86,6 +86,7 @@ class App_Mail_Transport_AmazonSES extends Zend_Mail_Transport_Abstract
             'Date' => $date,
             'X-Amzn-Authorization' => $this->_buildAuthKey($date)
         ));
+        $client->setEncType(Zend_Http_Client::ENC_URLENCODED);
         
         //Build the parameters
         $params = array(
@@ -100,7 +101,6 @@ class App_Mail_Transport_AmazonSES extends Zend_Mail_Transport_Abstract
         }
         
         $client->resetParameters();
-        $client->setEncType(Zend_Http_Client::ENC_URLENCODED);
         $client->setParameterPost($params);
         $response = $client->request();
         

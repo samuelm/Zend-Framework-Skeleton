@@ -57,7 +57,6 @@ class App_Mail_Abstract
                 'html' => Zend_Layout::getMvcInstance()->getView()->partial($this->_template, $args),
                 'reply' => (array_key_exists('replyTo', $args)? $args['replyTo']->email : NULL),
                 'attachment' => (array_key_exists('attachment', $args)? $args['attachment'] : NULL),
-                'trackingId' => $args['trackingId'],
                 'type' => $args['type'],
                 'campaign' => (array_key_exists('campaign', $args)? $args['campaign'] : NULL)
             )));
