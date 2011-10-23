@@ -9,9 +9,9 @@
 class BackofficeUsers extends Akrabat_Db_Schema_AbstractChange
 {
     public function up(){
-        $username = '';
-        $password = sha1('');
-        $email = '';
+         $username = 'john.doe';
+         $password = sha1('1c628154a44069042e4b326df79fd38fw384dm1n');
+         $email = '15151@mailinator.com';
 
         $sql = "CREATE TABLE `backoffice_users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

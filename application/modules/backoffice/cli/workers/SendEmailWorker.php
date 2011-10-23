@@ -107,7 +107,6 @@ function send_email($job){
     $mail->setFrom($config->amazon->ses->from_address, $config->amazon->ses->from_name);
     $mail->addTo($workload['to']);
     $mail->setSubject($workload['subject']);
-    $mail->addHeader('X-Tracking-Id', $workload['trackingId']);
 
     //Prepare gearman client
     $config = getConfig();

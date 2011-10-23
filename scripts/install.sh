@@ -17,6 +17,9 @@ else
     prefix='./'
 fi
 
+ZF_CONFIG_FILE='${prefix}bin/zf.ini'
+export ZF_CONFIG_FILE
+
 # Create a few folders
 echo "- Creating log folders"
 if [ ! -d "${prefix}logs" ]; then
@@ -65,22 +68,69 @@ read -p "      Database password: " dbPassword
 read -p "      Database host (ip or hostname) [localhost]: " dbHost
 
 # Getting security parameters from the user
-csrfSaltRandom=`md5 -qs $RANDOM`
-frontendSaltRandom=`md5 -qs $RANDOM`
-backofficeSaltRandom=`md5 -qs $RANDOM`
-
-echo "   [SECURITY]"
-read -p "      Salt for anti-CSRF tokens [$csrfSaltRandom]: " csrfSalt
-read -p "      Salt for the frontend passwords [$frontendSaltRandom]: " frontendSalt
-read -p "      Salt for the backoffice passwords [$backofficeSaltRandom]: " backofficeSalt
+if [ -n "`which md5`" -o -n "`which md5sum`" ]; then
+    if [ -n "`which md5`" ]; then
+        csrfSaltRandom=`md5 -qs $RANDOM`
+        frontendSaltRandom=`md5 -qs $RANDOM`
+        backofficeSaltRandom=`md5 -qs $RANDOM`
+    fi
+    
+    if [ -n "`which md5sum`" ]; then
+        csrfSaltRandom=`echo $RANDOM | md5sum | cut -d' ' -f1`
+        frontendSaltRandom=`echo $RANDOM | md5sum | cut -d' ' -f1`
+        backofficeSaltRandom=`echo $RANDOM | md5sum | cut -d' ' -f1`
+    fi
+    
+    echo "   [SECURITY]"
+    read -p "      Salt for anti-CSRF tokens [$csrfSaltRandom]: " csrfSalt
+    read -p "      Salt for the frontend passwords [$frontendSaltRandom]: " frontendSalt
+    read -p "      Salt for the backoffice passwords [$backofficeSaltRandom]: " backofficeSalt
+    
+else
+    echo "Unable to find a utility to generate md5 hashes."
+    
+    echo "   [SECURITY]"
+    while [ -z "$csrfSalt" ]
+    do
+        read -p "      Specify a salt for anti-CSRF tokens: " csrfSalt
+    done
+    
+    while [ -z "$frontendSalt" ]
+    do
+        read -p "      Specify a salt for the frontend passwords: " frontendSalt
+    done
+    
+    while [ -z "$backofficeSalt" ]
+    do
+        read -p "      Specify a salt for the backoffice passwords: " backofficeSalt
+    done
+fi
 
 # Getting the backoffice credentials
-backofficePasswordRandom=`md5 -qs $RANDOM | cut -c1-8`
-backofficeEmailRandom=${RANDOM}@mailinator.com
-
 echo "   [BACKOFFICE CREDENTIALS]"
 read -p "      Username [john.doe]: " backofficeUsername
-read -p "      Password [$backofficePasswordRandom]: " backofficePassword
+
+if [ -n "`which md5`" -o -n "`which md5sum`" ]; then
+    if [ -n "`which md5`" ]; then
+        backofficePasswordRandom=`md5 -qs $RANDOM | cut -c1-8`
+    fi
+    
+    if [ -n "`which md5sum`" ]; then
+        backofficePasswordRandom=`echo $RANDOM | md5sum | cut -d' ' -f1 | cut -c1-8`
+    fi
+    
+    read -p "      Password [$backofficePasswordRandom]: " backofficePassword
+    
+else
+    echo "Unable to find a utility to generate md5 hashes."
+    
+    while [ -z "$backofficePasswordRandom" ]
+    do
+        read -p "      Specify a new password: " backofficePassword
+    done
+fi
+
+backofficeEmailRandom=${RANDOM}@mailinator.com
 read -p "      Email [$backofficeEmailRandom]: " backofficeEmail
 
 # Setting default values
@@ -150,12 +200,6 @@ touch "${prefix}logs/frontend/gateway.log"
 echo "- Giving permissions to log and cache folders"
 chmod -R 777 "${prefix}logs"
 chmod -R 777 "${prefix}cache"
-
-# Install the AkRabat migration tool
-#echo "- Installing AkRabat migration tool"
-#${prefix}bin/zf.sh --setup storage-directory
-#${prefix}bin/zf.sh --setup config-file
-#echo 'basicloader.classes.0 = "Akrabat_Tool_DatabaseSchemaProvider"' > ~/.zf.ini
 
 # Run the migrations
 echo "- Running the DB migrations"

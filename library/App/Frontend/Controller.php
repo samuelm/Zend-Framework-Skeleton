@@ -45,8 +45,6 @@ abstract class App_Frontend_Controller extends App_Controller
         // check the Flag and Flipper
         $this->_checkFlagFlippers();
         
-        $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery.min.js');
-        $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery-ui.min.js');
         $this->view->headScript()->appendFile($this->view->baseUrl() . '/js/jquery-ui-i18n.js');
     }
     

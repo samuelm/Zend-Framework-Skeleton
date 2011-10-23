@@ -51,15 +51,41 @@ class App_Mail_Abstract
         if(!Zend_Registry::get('IS_PRODUCTION') && !App_DI_Container::get('ConfigObject')->testing->mail){
             $this->_log(Zend_Layout::getMvcInstance()->getView()->partial($this->_template, $args));
         }else{
-            App_DI_Container::get('GearmanClient')->doBackground('send_email', serialize(array(
-                'to' => $this->recipients,
-                'subject' => $this->_subject,
-                'html' => Zend_Layout::getMvcInstance()->getView()->partial($this->_template, $args),
-                'reply' => (array_key_exists('replyTo', $args)? $args['replyTo']->email : NULL),
-                'attachment' => (array_key_exists('attachment', $args)? $args['attachment'] : NULL),
-                'type' => $args['type'],
-                'campaign' => (array_key_exists('campaign', $args)? $args['campaign'] : NULL)
-            )));
+            if(App_DI_Container::get('ConfigObject')->system->gearman_support){
+                App_DI_Container::get('GearmanClient')->doBackground('send_email', serialize(array(
+                    'to' => $this->recipients,
+                    'subject' => $this->_subject,
+                    'html' => Zend_Layout::getMvcInstance()->getView()->partial($this->_template, $args),
+                    'reply' => (array_key_exists('replyTo', $args)? $args['replyTo']->email : NULL),
+                    'attachment' => (array_key_exists('attachment', $args)? $args['attachment'] : NULL),
+                    'type' => $args['type']
+                )));
+            }else{
+                $mail = new Zend_Mail('utf-8');
+
+                if(App_DI_Container::get('ConfigObject')->system->email_system->send_by_amazon_ses){
+                    $transport = new App_Mail_Transport_AmazonSES(array(
+                        'accessKey' => App_DI_Container::get('ConfigObject')->amazon->aws_access_key,
+                        'privateKey' => App_DI_Container::get('ConfigObject')->amazon->aws_private_key
+                    ));   
+                }
+                
+                $mail->setBodyHtml(Zend_Layout::getMvcInstance()->getView()->partial($this->_template, $args));
+                
+                if(array_key_exists('replyTo', $args)){
+                    $mail->setReplyTo($args['replyTo']->email);
+                }
+
+                $mail->setFrom(App_DI_Container::get('ConfigObject')->amazon->ses->from_address, App_DI_Container::get('ConfigObject')->amazon->ses->from_name);
+                $mail->addTo($this->recipients);
+                $mail->setSubject($this->_subject);
+
+                if(isset($transport) && $transport instanceOf App_Mail_Transport_AmazonSES){
+                    $mail->send($transport);
+                }else{
+                    $mail->send();
+                }
+            }
         }
     }
 

@@ -402,7 +402,7 @@ class Zend_Service_Amazon_SimpleDb extends Zend_Service_Amazon_Abstract
             }
         }
 
-        $nextToken = (string)$xml->SelectResult->NextToken;
+        $nextToken = (string)$xml->NextToken;
 
         return new Zend_Service_Amazon_SimpleDb_Page($attributes, $nextToken);
     }
