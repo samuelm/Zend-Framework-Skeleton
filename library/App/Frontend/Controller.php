@@ -15,16 +15,6 @@ abstract class App_Frontend_Controller extends App_Controller
     protected $_session = array();
     
     /**
-     * Overrides init() from App_Controller
-     * 
-     * @access public
-     * @return void
-     */
-    public function init(){
-        parent::init();
-    }
-    
-    /**
      * Overrides preDispatch() from App_Controller
      * Fetch and prepare the cart system in the namespace
      * 
