@@ -17,6 +17,19 @@ abstract class App_Controller extends Zend_Controller_Action
     private $_commands = array();
     
     /**
+     * Overrides init() from App_Controller
+     * 
+     * @access public
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+        
+        $this->t = Zend_Registry::get('Zend_Translate');
+    }
+    
+    /**
      * Add a new command to the chain
      *
      * @param object $cmd

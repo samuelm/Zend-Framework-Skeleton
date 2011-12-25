@@ -15,19 +15,17 @@ abstract class App_Frontend_Controller extends App_Controller
     protected $_session = array();
     
     /**
-     * Overrides init() from Neo_Controller
+     * Overrides init() from App_Controller
      * 
      * @access public
      * @return void
      */
     public function init(){
         parent::init();
-        
-        $this->t = Zend_Registry::get('Zend_Translate');
     }
     
     /**
-     * Overrides preDispatch() from Neo_Controller
+     * Overrides preDispatch() from App_Controller
      * Fetch and prepare the cart system in the namespace
      * 
      * @access public
