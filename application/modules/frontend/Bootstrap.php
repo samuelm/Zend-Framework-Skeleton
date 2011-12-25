@@ -45,13 +45,4 @@ class Frontend_Bootstrap extends App_Bootstrap_Abstract
         
         $viewRenderer->view->addHelperPath('App/Frontend/View/Helper', 'App_Frontend_View_Helper');
     }
-    
-    /**
-     * Initializes the action helpers for the application
-     *
-     * @return void
-     */
-    protected function _initActionHelpers(){
-        Zend_Controller_Action_HelperBroker::addHelper(new App_Controller_Action_Helper_T());
-    }
 }

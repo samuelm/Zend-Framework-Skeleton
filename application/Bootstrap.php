@@ -211,6 +211,9 @@ class Bootstrap extends App_Bootstrap_Abstract
         
         // Add the Flag and Flippers helper for the controllers. Example: $this->_helper->flagFlippers()
         Zend_Controller_Action_HelperBroker::addHelper(new App_Controller_Action_Helper_FlagFlippers());
+        
+        // Add the translator helper to all the modules
+        Zend_Controller_Action_HelperBroker::addHelper(new App_Controller_Action_Helper_T());
     }
     
     /**
