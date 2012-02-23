@@ -407,19 +407,7 @@ class Bootstrap extends App_Bootstrap_Abstract
         App_FlagFlippers_Manager::load();
     }
     
-    /**
-     * Initialize and configure the jQuery options
-     *
-     * @return void
-     */
-    protected function _initJQuery()
-    {
-        $view = Zend_Layout::getMvcInstance()->getView();
-        $view->jQuery()->addStylesheet('/css/jquery-ui.css');
-        $view->jQuery()->setLocalPath('/js/jquery.min.js');
-        $view->jQuery()->setUiLocalPath('/js/jquery-ui.min.js');
-    }
-    
+
     /**
      * Runs the application
      * 
