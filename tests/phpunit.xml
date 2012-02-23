@@ -1,5 +1,5 @@
 <phpunit bootstrap="./TestHelper.php">
-    <testsuite name="Zend Framework - Testsuite">
+    <testsuite name="Application - Testsuite">
         <directory>./</directory>
     </testsuite>
     

@@ -1,3 +1,25 @@
+
+Zend Framework Skeleton Reloaded
+================================
+
+This is a fork of the excellent Zend-Framework-Skeleton by christophervalles.
+I just adapted it to my own need .
+Check below the original description.
+
+Here is what new / different in this fork
+
+* Use of HTML5 
+* Intégration of boilter template (http://html5boilerplate.com/) layout and css
+* .htaccess enhanced 
+* Remove Zend Unit Test form the test directory ( we don't need to test Zend )
+
+
+I'm still working on it and i plan to add many features.
+
+
+
+
+
 Description
 ===========
 
@@ -51,8 +73,7 @@ This is a Zend Framework Skeleton, below you'll find some specs about it.
 * Bitly Short Url service integrated
 * Custom logic to handle emails and their templates
 * Install script
-* Added ZendX and configured to use local version of jQuery and jQuery UI
-* Added the official Zend unit tests
+
 
 
 Credentials to access the BO
