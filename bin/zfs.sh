@@ -3,7 +3,7 @@
 currentFolder=`basename \`pwd\``
 
 # Check if we are executing the script inside scripts folder or in the root folder
-if [ $currentFolder == "bin" ] ; then
+if  $currentFolder == "bin"  ; then
     echo "You must run this script from the root folder"
     exit 1
 else
