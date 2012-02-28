@@ -12,15 +12,14 @@ Here is what new / different in this fork
 * Intégration of boilter template (http://html5boilerplate.com/) layout and css
 * .htaccess enhanced 
 * Remove Zend Unit Test form the test directory ( we don't need to test Zend )
-
+* User HTML5 and bootstrap for the backoffice ( http://twitter.github.com/bootstrap/index.html ) template
+* Change the way the form render to fit bootstrap layout ( no more dl )
 
 I'm still working on it and i plan to add many features.
 
 
 
-
-
-Description
+Full Description from the original project
 ===========
 
 This is a Zend Framework Skeleton, below you'll find some specs about it.
