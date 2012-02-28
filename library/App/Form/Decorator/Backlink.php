@@ -47,13 +47,13 @@ class App_Form_Decorator_Backlink extends Zend_Form_Decorator_Abstract
         switch ($placement) {
             case self::APPEND:
                 $link = sprintf(
-                    '<span class="or">%3$s</span> <a class="cancel" href="%1$s" title="%2$s">%2$s</a>',
+                    '<span class="or">%3$s</span> <a class="btn btn-danger" href="%1$s" title="%2$s">%2$s</a>',
                     $url, $linkText, $spanText
                 );
                 return $content . $separator . $link;
             case self::PREPEND:
                 $link = sprintf(
-                    '<a class="cancel" href="%1$s" title="%2$s">%2$s</a> <span class="or">%3$s</span>',
+                    '<a class="btn btn-danger" href="%1$s" title="%2$s">%2$s</a> <span class="or">%3$s</span>',
                     $url, $linkText, $spanText
                 );
                 return $link . $separator . $content;

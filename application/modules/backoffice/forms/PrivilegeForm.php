@@ -89,6 +89,7 @@ class PrivilegeForm extends App_Backoffice_Form
         $submit->setOptions(
             array(
                 'label'      => 'Save privilege',
+                'class'      => 'btn btn-primary',
                 'required'   => TRUE,
             )
         );

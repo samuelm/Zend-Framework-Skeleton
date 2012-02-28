@@ -28,7 +28,7 @@ class GroupsController extends App_Backoffice_Controller
      * @return void
      */
     public function indexAction(){
-        $this->title = '';
+        $this->title = 'Manage user groups';
         
         $groupModel = new Group();
         $this->view->paginator = $groupModel->findAll($this->_getPage());

@@ -59,6 +59,7 @@ class GroupPermissionsForm extends App_Backoffice_Form
         $submit->setOptions(
             array(
                 'label'      => 'Save permissions',
+                'class'      => 'btn btn-primary',
                 'required'   => true,
             )
         );

@@ -66,6 +66,7 @@ class LoginForm extends App_Backoffice_Form
         $submit->setOptions(
             array(
                 'label'      => 'Log in →',
+                'class'      => 'btn btn-primary',
                 'required'   => true,
             )
         );

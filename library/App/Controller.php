@@ -88,7 +88,7 @@ abstract class App_Controller extends Zend_Controller_Action
         
         //Check the flag and flippers for ZFDebug
         if(!App_FlagFlippers_Manager::isAllowed($user->group->name, 'testing', 'zfdebug')){
-            Zend_Controller_Front::getInstance()->unregisterPlugin('ZFDebug_Controller_Plugin_Debug');
+           Zend_Controller_Front::getInstance()->unregisterPlugin('ZFDebug_Controller_Plugin_Debug');
         }
         
         if(!App_FlagFlippers_Manager::isAllowed($user->group->name, $controllerName, $actionName)){

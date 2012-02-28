@@ -109,6 +109,7 @@ class ProfileForm extends App_Backoffice_Form
         $submit->setOptions(
             array(
                 'label'      => 'Save profile',
+                'class'      => 'btn btn-primary',
                 'required'   => true,
             )
         );

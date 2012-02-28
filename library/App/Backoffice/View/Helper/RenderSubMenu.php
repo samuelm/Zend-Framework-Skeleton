@@ -65,7 +65,7 @@ class App_View_Helper_RenderSubMenu extends Zend_View_Helper_Abstract
             }
         }
         
-        $xhtml = '<ul class="prefix_1 clearfix">' . PHP_EOL . implode(PHP_EOL, $menu) . PHP_EOL . '</ul>';
+        $xhtml = '<ul class="nav nav-pills">' . PHP_EOL . implode(PHP_EOL, $menu) . PHP_EOL . '</ul>';
         
         return $xhtml;
     }

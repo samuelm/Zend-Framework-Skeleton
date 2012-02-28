@@ -23,7 +23,7 @@ class App_View_Helper_FlashMessenger extends Zend_View_Helper_Abstract
      * @param string $template Format string for message output
      * @return string Flash messages formatted for output
      */
-    public function flashMessenger($key = 'text', $template = '<div class="msg %s"><p>%s</p></div>'){
+    public function flashMessenger($key = 'text', $template = '<div class="alert %s"><a class="close" data-dismiss="alert">×</a><p>%s</p></div>'){
         $flashMessenger = $this->_getFlashMessenger();
         //get messages from previous requests
         $messages = $flashMessenger->getMessages();

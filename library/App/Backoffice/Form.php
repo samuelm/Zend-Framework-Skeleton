@@ -9,6 +9,8 @@
 
 abstract class App_Backoffice_Form extends App_Form
 {
+  
+ 
     /**
      * URL for the cancelLink
      * 
@@ -46,7 +48,7 @@ abstract class App_Backoffice_Form extends App_Form
         $this->addElement($csrfHash);
     }
     
-    /**
+     /**
      * Overrides render() in App_Form
      * 
      * @param Zend_View_Interface $view 
@@ -54,70 +56,25 @@ abstract class App_Backoffice_Form extends App_Form
      * @return string
      */
     public function render(Zend_View_Interface $view = NULL){
-        foreach($this->getElements() as $element) {
-            $this->_replaceLabel($element);
-            
-            switch(TRUE){
-                case $element instanceof Zend_Form_Element_Hidden:
-                case $element instanceof Zend_Form_Element_Hash:
-                    $this->_addHiddenClass($element);
-                    break;
-                case $element instanceof Zend_Form_Element_Checkbox:
-                    $this->_appendLabel($element);
-                    break;
-                case $element instanceof Zend_Form_Element_MultiCheckbox:
-                    $element->getDecorator('Label')->setOption('tagOptions', array('class' => 'checkboxGroup'));
-                    $element->getDecorator('HtmlTag')->setOption('class', 'checkboxGroup');
-                    break;
-            }
+              
+        foreach($this->getElements() as $element) 
+        {            
+          $this->_replaceLabel($element);
         }
+      
         
-        $this->_cancelLink();
-        
-        $this->getDecorator('HtmlTag')->setOption('class', 'zend_form clearfix');
+        $this->_cancelLink();  
+        $this->setAttrib('class', 'form-horizontal');
         
         if (NULL === $this->getAttrib('id')) {
             $controllerName = Zend_Registry::get('controllerName');
-            $actionName = Zend_Registry::get('actionName');
-            
+            $actionName = Zend_Registry::get('actionName');            
             $this->setAttrib('id', $controllerName . '-' . $actionName);
         }
         
         return parent::render($view);
     }
-    
-    /**
-     * Add the hidden class
-     * 
-     * @param Zend_Form_Element_Abstract $element 
-     * @access protected
-     * @return void
-     */
-    protected function _addHiddenClass($element){
-        $label = $element->getLabel();
-        if (empty($label)) {
-            $element->setLabel('');
-        }
         
-        $element->getDecorator('HtmlTag')
-                ->setOption('class', 'hidden');
-        
-        $element->getDecorator('Label')
-                ->setOption('tagOptions', array('class' => 'hidden'));
-    }
-    
-    /**
-     * Forces the element's label to be appended to it rather
-     * than prepend it
-     * 
-     * @param Zend_Form_Element_Abstract $element 
-     * @access protected
-     * @return void
-     */
-    protected function _appendLabel($element){
-        $element->getDecorator('Label')
-                ->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
-    }
     
     /**
      * Replaces the default label decorator with a more
@@ -200,4 +157,7 @@ abstract class App_Backoffice_Form extends App_Form
         
         return $this->_cancelLink;
     }
+
+    
+    
 }

@@ -38,6 +38,7 @@ class DeleteForm extends App_Backoffice_Form
         $submit->setOptions(
             array(
                 'label'      => 'Yes, delete it',
+                'class'      => 'btn btn-primary',
                 'required'   => true,
             )
         );

@@ -158,6 +158,7 @@ class UserForm extends App_Backoffice_Form
         $submit->setOptions(
             array(
                 'label'      => 'Save user',
+                'class'      => 'btn btn-primary',
                 'required'   => true,
                 'order'      => 100,
             )

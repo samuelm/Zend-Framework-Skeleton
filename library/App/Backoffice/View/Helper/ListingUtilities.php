@@ -151,17 +151,15 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
         'edit'      =>  array(
             'action'        => 'edit',
             'title'         => 'Edit',
-            'link_class'    => 'ico',
-            'img_alt'       => 'edit',
-            'img_url'       => '/images/icons/fff/pencil.png',
+            'link_class'    => 'btn-primary',
+            'icon'          => 'icon-pencil icon-white',
             'parameter'     => TRUE,
         ),
         'delete'    =>  array(
             'action'        => 'delete',
             'title'         => 'Delete',
-            'link_class'    => 'ico',
-            'img_alt'       => 'delete',
-            'img_url'       => '/images/icons/fff/cross.png',
+            'link_class'    => 'btn-danger',
+            'icon'          => 'icon-trash icon-white',
             'parameter'     => TRUE,
         ),
     );
@@ -348,21 +346,16 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
             $url .= '?id=' . $item->id;
         }
         
-        if (!isset($action['icon']) || (isset($action['icon']) && $action['icon'])) {
-            $link = '<li>' . PHP_EOL .
-                    '<a class="' . (isset($action['link_class'])? $action['link_class'] : '') . 
-                        '"href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
-                    '<img src="' . $this->_baseUrl . $action['img_url'] . 
-                        '" alt="' . $action['img_alt'] . '" />' . PHP_EOL .
-                    '</a>' . PHP_EOL .
-                    '</li>' . PHP_EOL;
+        if( (isset($action['icon']) && $action['icon']) ) {
+            $link = '<a class="btn btn-mini ' . (isset($action['link_class'])? $action['link_class'] : '') . 
+                        '"href="'. $url . '" title="' . $action['title'] . '">'.
+                    '<i class="'.$action['icon'].'" ></i> '.$action['title'].
+                    '</a>';
         } else {
-            $link = '<li>' . PHP_EOL .
-                    '<a class="' . (isset($action['link_class'])? $action['link_class'] : '') . 
-                        '" href="'. $url . '" title="' . $action['title'] . '">' . PHP_EOL .
-                    $action['title'] . PHP_EOL .
-                    '</a>' . PHP_EOL .
-                    '</li>' . PHP_EOL;
+            $link =  '<a class="btn btn-mini ' . (isset($action['link_class'])? $action['link_class'] : '') . 
+                        '" href="'. $url . '" title="' . $action['title'] . '">'.
+                    $action['title'].
+                    '</a>';
         }
         
         return $this->_return($link, $echo);
@@ -391,9 +384,7 @@ class App_View_Helper_ListingUtilities extends Zend_View_Helper_Abstract
         }
         
         if (!empty($links)) {
-            $result = '<ul class="actions">' . PHP_EOL .
-                      implode(PHP_EOL, $links) .
-                      '</ul>';
+            $result = '<div class="actions">'.implode(PHP_EOL,$links).'</div>';
         }
         
         return $this->_return($result, $echo);

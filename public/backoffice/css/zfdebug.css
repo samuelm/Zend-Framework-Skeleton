@@ -1,4 +1,4 @@
-#ZFDebug_debug { font: 11px/1.4em Lucida Grande, Lucida Sans Unicode, sans-serif; position:fixed; bottom:5px; left:1px; color:#000; z-index: ' . $this->_options['z-index'] . ';}
+#ZFDebug_debug { font: 11px/1.4em Lucida Grande, Lucida Sans Unicode, sans-serif; position:fixed; bottom:5px; left:1px; color:#000; z-index: 2000;}
 #ZFDebug_debug ol {margin:10px 0px; padding:0 25px}
 #ZFDebug_debug li {margin:0 0 10px 0;}
 #ZFDebug_debug .clickable {cursor:pointer}
@@ -15,3 +15,13 @@
     -moz-border-radius: 3px;
     margin: 10px;
 }
+
+
+#ZFDebug_debug [class*="span"] {
+margin-left:0;
+}
+
+#ZFDebug_debug [class*="span"] {
+ margin-left:0;
+}
+

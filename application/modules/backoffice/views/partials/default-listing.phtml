@@ -12,18 +12,17 @@ $helper = $this->listingUtilities($this->config);
 
 ?>
 
-<div class="data-table-header clearfix">
-    <h1><?php $helper->pageTitle();?></h1>
-
+<header class="page-header">  
     <?php if($helper->canShowAddButton() && $helper->canAdd()):?>
-        <a class="button" href="<?php $helper->addUrl();?>"><?php $helper->addMessage();?></a>
+        <a class="btn pull-right clearfix" href="<?php $helper->addUrl();?>"><i class="icon-plus-sign"></i> <?php $helper->addMessage();?></a>
     <?php endif;?>    
-</div>
+    <h1><?php $helper->pageTitle();?></h1>  
+</header>
 
-<form class="plain" action="" method="post" enctype="multipart/form-data"> 
+<form class="clearfix" action="" method="post" enctype="multipart/form-data"> 
     <fieldset>
         <div class="data-table">
-            <table class="tablesorter"> 
+            <table class="tablesorter table table-striped table-bordered table-condensed"> 
                 <thead><!-- universal table heading --> 
                     <tr>
                         <?php /********** display the column names **********/ ?>
@@ -76,8 +75,8 @@ $helper = $this->listingUtilities($this->config);
         </div>
     </fieldset> 
 </form>
-<div class="pagination">
+
+
     <?php if($this->paginator Instanceof Zend_Paginator && $this->paginator->count() > 1) : ?>
         <?php echo $this->paginator; ?>
     <?php endif; ?>
-</div>

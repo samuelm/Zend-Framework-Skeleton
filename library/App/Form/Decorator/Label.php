@@ -24,13 +24,13 @@ class App_Form_Decorator_Label extends Zend_Form_Decorator_Label
             return $content;
         }
         
-        $label = $this->getLabel();
+        $label     = $this->getLabel();
         $separator = $this->getSeparator();
         $placement = $this->getPlacement();
-        $tag = $this->getTag();
-        $id = $this->getId();
-        $class = $this->getClass();
-        $options = $this->getOptions();
+        $tag       = $this->getTag();
+        $id        = $this->getId();
+        $class     = $this->getClass();
+        $options   = $this->getOptions();
         
         unset($options['tagOptions']);
         
