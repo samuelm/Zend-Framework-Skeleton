@@ -94,8 +94,8 @@ EOS;
 \$config = array();
 
 // messages
-\$config['pageTitle'] = 'Manage $moduleName;
-\$config['addMessage'] = 'Add new $moduleName; 
+\$config['pageTitle'] = 'Manage $moduleName';
+\$config['addMessage'] = 'Add new $moduleName'; 
 \$config['emptyMessage'] = 'There is not $moduleName registered at this time.';
 
 // column names & indexes
