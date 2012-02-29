@@ -21,9 +21,9 @@
     $(document).ready(function(){
         var imgTotal=7;
         var randomNumber = Math.round(Math.random()*(imgTotal-1))+1;
-        var imgPath=('/images/error-404-0'+randomNumber+'.gif');
+        var imgPath=('/img/error-404-0'+randomNumber+'.gif');
         var img = $("<img>").attr({
-            'src': '<?php echo $this->baseUrl();?>/images/error-404-0' + randomNumber + '.gif',
+            'src': '<?php echo $this->baseUrl();?>/img/error-404-0' + randomNumber + '.gif',
             'class': 'error404',
             'alt': 'Error 404',
             });
